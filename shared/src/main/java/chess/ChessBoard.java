@@ -7,11 +7,11 @@ package chess;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private ChessPiece[][] squares;
+    private ChessPiece[][] board;
 
 
     public ChessBoard() {
-        squares = new ChessPiece[8][8]; //8x8 board standard chess size
+        board = new ChessPiece[8][8]; //8x8 board standard chess size
     }
 
     /**
@@ -21,7 +21,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        squares[position.getRow() - 1][position.getColumn() - 1] = piece;
+        board[position.getRow() - 1][position.getColumn() - 1] = piece;
         //throw new RuntimeException("Not implemented");
     }
 
@@ -33,7 +33,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return squares[position.getRow() - 1][position.getColumn() - 1];
+        return board[position.getRow() - 1][position.getColumn() - 1];
         //throw new RuntimeException("Not implemented");
     }
 
@@ -42,52 +42,76 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-            // Clears board
-            squares = new ChessPiece[8][8];
+        // Clear the board first
+        board = new ChessPiece[8][8];
 
-            // Set up white pieces (row 1 and 2)
-            squares[0][0] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
-            squares[0][1] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
-            squares[0][2] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
-            squares[0][3] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
-            squares[0][4] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
-            squares[0][5] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
-            squares[0][6] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
-            squares[0][7] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
-
-            // White pawns (row 2)
-            for (int i = 0; i < 8; i++) {
-                squares[1][i] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
-            }
-
-            // Set up black pieces (row 8 and 7)
-            squares[7][0] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
-            squares[7][1] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
-            squares[7][2] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
-            squares[7][3] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
-            squares[7][4] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
-            squares[7][5] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
-            squares[7][6] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
-            squares[7][7] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
-
-            // Black pawns (row 7)
-            for (int i = 0; i < 8; i++) {
-                squares[6][i] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
-            }
+        // Set up starting positions for both teams
+        setupWhitePieces();
+        setupBlackPieces();
     }
+
+    /**
+     * Places white pieces in their starting positions (rows 1-2)
+     */
+    private void setupWhitePieces() {
+        setupBackRow(0, ChessGame.TeamColor.WHITE);
+        setupPawnRow(1, ChessGame.TeamColor.WHITE);
+    }
+
+    /**
+     * Places black pieces in their starting positions (rows 7-8)
+     */
+    private void setupBlackPieces() {
+        setupBackRow(7, ChessGame.TeamColor.BLACK);
+        setupPawnRow(6, ChessGame.TeamColor.BLACK);
+    }
+
+    /**
+     * Sets up the back row pieces (rook, knight, bishop, queen, king, bishop, knight, rook)
+     * @param row The row to place pieces (0 for white, 7 for black)
+     * @param color The team color of the pieces
+     */
+    private void setupBackRow(int row, ChessGame.TeamColor color) {
+        ChessPiece.PieceType[] backRowOrder = {
+                ChessPiece.PieceType.ROOK,
+                ChessPiece.PieceType.KNIGHT,
+                ChessPiece.PieceType.BISHOP,
+                ChessPiece.PieceType.QUEEN,
+                ChessPiece.PieceType.KING,
+                ChessPiece.PieceType.BISHOP,
+                ChessPiece.PieceType.KNIGHT,
+                ChessPiece.PieceType.ROOK
+        };
+
+        for (int col = 0; col < 8; col++) {
+            board[row][col] = new ChessPiece(color, backRowOrder[col]);
+        }
+    }
+
+    /**
+     * Sets up a row of pawns
+     * @param row The row to place pawns (1 for white, 6 for black)
+     * @param color The team color of the pawns
+     */
+    private void setupPawnRow(int row, ChessGame.TeamColor color) {
+        for (int col = 0; col < 8; col++) {
+            board[row][col] = new ChessPiece(color, ChessPiece.PieceType.PAWN);
+        }
+    }
+
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ChessBoard) {
             ChessBoard other = (ChessBoard) obj;
-            return java.util.Arrays.deepEquals(this.squares, other.squares);
+            return java.util.Arrays.deepEquals(this.board, other.board);
         }
     return false;
 }
 
     @Override
     public int hashCode() {
-        return java.util.Arrays.deepHashCode(squares);
+        return java.util.Arrays.deepHashCode(board);
 }
 
     @Override
