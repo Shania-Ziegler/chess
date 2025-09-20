@@ -11,7 +11,7 @@ public class ChessBoard {
 
 
     public ChessBoard() {
-        board = new ChessPiece[8][8]; //8x8 board standard chess size
+        board = new ChessPiece[8][8]; //8x8 board standard chess size 2darray representation
     }
 
     /**
@@ -22,7 +22,8 @@ public class ChessBoard {
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
         board[position.getRow() - 1][position.getColumn() - 1] = piece;
-        //throw new RuntimeException("Not implemented");
+        // Convert from chess rules on 8x8 (1-8) to array indices (0-7)
+        //ie Chess positions start at 1, but arrays start at 0
     }
 
     /**
@@ -34,7 +35,7 @@ public class ChessBoard {
      */
     public ChessPiece getPiece(ChessPosition position) {
         return board[position.getRow() - 1][position.getColumn() - 1];
-        //throw new RuntimeException("Not implemented");
+
     }
 
     /**
@@ -100,6 +101,8 @@ public class ChessBoard {
     }
 
 
+     // Compares two chess boards for equality
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ChessBoard) {
@@ -113,6 +116,9 @@ public class ChessBoard {
     public int hashCode() {
         return java.util.Arrays.deepHashCode(board);
 }
+
+   //Returns a simple string representation of the board
+     // Could be improved to show actual board layout for debugging
 
     @Override
     public String toString() {
