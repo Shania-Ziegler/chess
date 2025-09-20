@@ -8,22 +8,31 @@ package chess;
  */
 public class ChessMove {
 
+    private final ChessPosition startPosition;
+    private final ChessPosition endPosition;
+    private final ChessPiece.PieceType promotionPiece;
+
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
+        this.startPosition = startPosition;
+        this.endPosition = endPosition;
+        this.promotionPiece = promotionPiece;
     }
 
     /**
      * @return ChessPosition of starting location
      */
     public ChessPosition getStartPosition() {
-        throw new RuntimeException("Not implemented");
+        return startPosition;
+        //throw new RuntimeException("Not implemented");
     }
 
     /**
      * @return ChessPosition of ending location
      */
     public ChessPosition getEndPosition() {
-        throw new RuntimeException("Not implemented");
+        return endPosition;
+        //throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -33,6 +42,29 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        throw new RuntimeException("Not implemented");
+        return promotionPiece;
+        // throw new RuntimeException("Not implemented");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ChessMove) {
+            ChessMove other = (ChessMove) obj;
+            return this.startPosition.equals(other.startPosition) &&
+                    this.endPosition.equals(other.endPosition) &&
+                    java.util.Objects.equals(this.promotionPiece, other.promotionPiece);
+        }
+        return false;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return startPosition.hashCode() + endPosition.hashCode() * 31 +
+                (promotionPiece != null ? promotionPiece.hashCode() : 0);
+    }
+    @Override
+    public String toString() {
+        return startPosition + "." + endPosition;
     }
 }
