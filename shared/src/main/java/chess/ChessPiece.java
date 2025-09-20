@@ -59,11 +59,11 @@ public class ChessPiece {
         ArrayList<ChessMove> moves = new ArrayList<>();
         ChessPiece piece = board.getPiece(myPosition);
 
-        if (piece == null) return moves;
+        if (piece == null) return moves; //small saftey check so if no piece exist return null
 
         PieceType type = piece.getPieceType();
 
-        switch (type) {
+        switch (type) { //if rook do straight if bishop do diagonal and so forth just adds what moves to do
             case ROOK:
                 addStraightMoves(moves, board, myPosition, piece);
                 break;
@@ -83,21 +83,21 @@ public class ChessPiece {
             case PAWN:
                 addPawnMoves(moves, board, myPosition, piece);
                 break;
-        } //can prob make this look less ugly :')
+        }
 
         return moves;
     }
     // Helper method for rook/queen straight line moves
     private void addStraightMoves(ArrayList<ChessMove> moves, ChessBoard board,
                                   ChessPosition myPosition, ChessPiece piece) {
-        int[][] directions = {{1,0}, {-1,0}, {0,1}, {0,-1}}; // up, down, right, left
-
+        int[][] directions = {{1,0}, {-1,0}, {0,1}, {0,-1}}; //defines up, down, right, left
+//try each direction
         for (int[] dir : directions) {
             for (int i = 1; i < 8; i++) {
                 int newRow = myPosition.getRow() + (dir[0] * i);
                 int newCol = myPosition.getColumn() + (dir[1] * i);
 
-                if (newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8) break;
+                if (newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8) break; //if going out of bounds stop
 
                 ChessPosition newPos = new ChessPosition(newRow, newCol);
                 ChessPiece target = board.getPiece(newPos);
@@ -108,7 +108,7 @@ public class ChessPiece {
                     if (target.getTeamColor() != piece.getTeamColor()) {
                         moves.add(new ChessMove(myPosition, newPos, null));
                     }
-                    break; // Stop after hitting any piece :)
+                    break; // can't move past piece if we hit it :)
                 }
             }
         }
@@ -118,7 +118,7 @@ public class ChessPiece {
     private void addDiagonalMoves(ArrayList<ChessMove> moves, ChessBoard board,
                                   ChessPosition myPosition, ChessPiece piece) {
         int[][] directions = {{1,1}, {1,-1}, {-1,1}, {-1,-1}}; // all diagonals
-
+//same logic as straight but diagonally
         for (int[] dir : directions) {
             for (int i = 1; i < 8; i++) {
                 int newRow = myPosition.getRow() + (dir[0] * i);
@@ -135,7 +135,7 @@ public class ChessPiece {
                     if (target.getTeamColor() != piece.getTeamColor()) {
                         moves.add(new ChessMove(myPosition, newPos, null));
                     }
-                    break;
+                    break; //stops if hitting any piece
                 }
             }
         }
@@ -144,12 +144,12 @@ public class ChessPiece {
     // Helper method for king moves (one square in any direction)
     private void addKingMoves(ArrayList<ChessMove> moves, ChessBoard board,
                               ChessPosition myPosition, ChessPiece piece) {
-        int[][] directions = {{1,0}, {-1,0}, {0,1}, {0,-1}, {1,1}, {1,-1}, {-1,1}, {-1,-1}};
+        int[][] directions = {{1,0}, {-1,0}, {0,1}, {0,-1}, {1,1}, {1,-1}, {-1,1}, {-1,-1}}; //the moves of the king any 1 square
 
         for (int[] dir : directions) {
             int newRow = myPosition.getRow() + dir[0];
             int newCol = myPosition.getColumn() + dir[1];
-
+//below checks bounds
             if (newRow >= 1 && newRow <= 8 && newCol >= 1 && newCol <= 8) {
                 ChessPosition newPos = new ChessPosition(newRow, newCol);
                 ChessPiece target = board.getPiece(newPos);
@@ -161,7 +161,7 @@ public class ChessPiece {
         }
     }
 
-    // Helper method for knight moves (L-shape)
+    // Helper method for knight moves (L-shape moveset)
     private void addKnightMoves(ArrayList<ChessMove> moves, ChessBoard board,
                                 ChessPosition myPosition, ChessPiece piece) {
         int[][] knightMoves = {{2,1}, {2,-1}, {-2,1}, {-2,-1}, {1,2}, {1,-2}, {-1,2}, {-1,-2}};
@@ -173,7 +173,7 @@ public class ChessPiece {
             if (newRow >= 1 && newRow <= 8 && newCol >= 1 && newCol <= 8) {
                 ChessPosition newPos = new ChessPosition(newRow, newCol);
                 ChessPiece target = board.getPiece(newPos);
-
+//knight can jump over pieces so below just checks the destenation square
                 if (target == null || target.getTeamColor() != piece.getTeamColor()) {
                     moves.add(new ChessMove(myPosition, newPos, null));
                 }
@@ -181,7 +181,7 @@ public class ChessPiece {
         }
     }
 
-    // Helper method for pawn moves (most complex due to special rules of getting promoted)
+    // Helper method for pawn moves
     private void addPawnMoves(ArrayList<ChessMove> moves, ChessBoard board,
                               ChessPosition myPosition, ChessPiece piece) {
         int direction = (piece.getTeamColor() == ChessGame.TeamColor.WHITE) ? 1 : -1;
@@ -229,24 +229,29 @@ public class ChessPiece {
             moves.add(new ChessMove(start, end, PieceType.BISHOP));
             moves.add(new ChessMove(start, end, PieceType.KNIGHT));
         } else {
-            moves.add(new ChessMove(start, end, null));
+            moves.add(new ChessMove(start, end, null)); //normal move no promotion of pawn
         }
     }
 
-
+//check if other obj is chess piece
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ChessPiece) {
             ChessPiece other = (ChessPiece) obj;
-            return this.pieceColor == other.pieceColor && this.type == other.type;
+            return this.pieceColor == other.pieceColor && this.type == other.type; //this states two pieces are equal if they have same color and same type
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return pieceColor.hashCode() + type.hashCode() * 31;
+        return pieceColor.hashCode() + type.hashCode() * 31; //multiplied by 31 to improve efficiency 31 is v common
     }
+    /**
+     * Returns a string representation of ChessPiece
+     * Makes debugging easier ie instead of seeing "ChessPiece@1a2b3c", see "WHITE QUEEN"
+     */
+
     @Override
     public String toString() {
         return pieceColor + "" + type;
