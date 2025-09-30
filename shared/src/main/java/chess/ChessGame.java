@@ -9,9 +9,12 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
-//this is a test comment
-    public ChessGame() {
+private Chessboard board;
+private TeamColor currentTurn; //current turn need to unitalize both fields in constructor
 
+    public ChessGame() {
+    board = new ChessBoard();
+    currentTurn = TeamColor.WHITE; //white goes first in classical chess rules always
     }
 
     /**
