@@ -1,5 +1,4 @@
 package chess;
-
 import java.util.Collection;
 
 /**
@@ -9,11 +8,12 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
-private Chessboard board;
-private TeamColor currentTurn; //current turn need to unitalize both fields in constructor
+private ChessBoard board;
+private TeamColor currentTurn; //initalize both fields in constructor
 
     public ChessGame() {
     board = new ChessBoard();
+    board.resetBoard();
     currentTurn = TeamColor.WHITE; //white goes first in classical chess rules always
     }
 
@@ -22,6 +22,7 @@ private TeamColor currentTurn; //current turn need to unitalize both fields in c
      */
     public TeamColor getTeamTurn() {
         throw new RuntimeException("Not implemented");
+        //what is current turn + What to gie back
     }
 
     /**
@@ -31,6 +32,7 @@ private TeamColor currentTurn; //current turn need to unitalize both fields in c
      */
     public void setTeamTurn(TeamColor team) {
         throw new RuntimeException("Not implemented");
+        //asking myself set this team color i am passing where do i store this??!
     }
 
     /**
@@ -60,6 +62,7 @@ private TeamColor currentTurn; //current turn need to unitalize both fields in c
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         throw new RuntimeException("Not implemented");
+        //move valid exectue it
     }
 
     /**
@@ -71,7 +74,7 @@ private TeamColor currentTurn; //current turn need to unitalize both fields in c
     public boolean isInCheck(TeamColor teamColor) {
         throw new RuntimeException("Not implemented");
     }
-
+//find king
     /**
      * Determines if the given team is in checkmate
      *
@@ -80,6 +83,7 @@ private TeamColor currentTurn; //current turn need to unitalize both fields in c
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         throw new RuntimeException("Not implemented");
+        //in check ofc and not in check
     }
 
     /**
@@ -92,7 +96,7 @@ private TeamColor currentTurn; //current turn need to unitalize both fields in c
     public boolean isInStalemate(TeamColor teamColor) {
         throw new RuntimeException("Not implemented");
     }
-
+//check the not in check and no valid moves kinda vibe
     /**
      * Sets this game's chessboard with a given board
      *
@@ -101,7 +105,8 @@ private TeamColor currentTurn; //current turn need to unitalize both fields in c
     public void setBoard(ChessBoard board) {
         throw new RuntimeException("Not implemented");
     }
-
+//this is easier to implement so what does this store parameter in hm?
+    //store board parameter ofc
     /**
      * Gets the current chessboard
      *
@@ -110,4 +115,6 @@ private TeamColor currentTurn; //current turn need to unitalize both fields in c
     public ChessBoard getBoard() {
         throw new RuntimeException("Not implemented");
     }
+    //what returns ??
 }
+//add my equals and hashcode + maybe other ovverrides
