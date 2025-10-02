@@ -8,21 +8,20 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
-private ChessBoard board;
-private TeamColor currentTurn; //initalize both fields in constructor
+    private ChessBoard board;
+    private TeamColor currentTurn; //initalize both fields in constructor
 
     public ChessGame() {
-    board = new ChessBoard();
-    board.resetBoard();
-    currentTurn = TeamColor.WHITE; //white goes first in classical chess rules always
+        board = new ChessBoard();
+        board.resetBoard();
+        currentTurn = TeamColor.WHITE; //white goes first in classical chess rules always
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
-        //what is current turn + What to gie back
+        return currentTurn; //return field that stores whos turn it is
     }
 
     /**
@@ -31,8 +30,7 @@ private TeamColor currentTurn; //initalize both fields in constructor
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
-        //asking myself set this team color i am passing where do i store this??!
+        this.currentTurn = team; //store parameter <team> into field :)
     }
 
     /**
@@ -75,6 +73,7 @@ private TeamColor currentTurn; //initalize both fields in constructor
         throw new RuntimeException("Not implemented");
     }
 //find king
+
     /**
      * Determines if the given team is in checkmate
      *
@@ -97,6 +96,7 @@ private TeamColor currentTurn; //initalize both fields in constructor
         throw new RuntimeException("Not implemented");
     }
 //check the not in check and no valid moves kinda vibe
+
     /**
      * Sets this game's chessboard with a given board
      *
@@ -105,8 +105,8 @@ private TeamColor currentTurn; //initalize both fields in constructor
     public void setBoard(ChessBoard board) {
         throw new RuntimeException("Not implemented");
     }
-//this is easier to implement so what does this store parameter in hm?
-    //store board parameter ofc
+    return board;
+
     /**
      * Gets the current chessboard
      *
@@ -115,6 +115,20 @@ private TeamColor currentTurn; //initalize both fields in constructor
     public ChessBoard getBoard() {
         throw new RuntimeException("Not implemented");
     }
-    //what returns ??
+    this.board =board; //store parameter into field
 }
 //add my equals and hashcode + maybe other ovverrides
+
+@Override
+public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    ChessGame game = (ChessGame) o;
+    return Objects.equals(board, game.board) &&
+            currentTurn == game.currentTurn;
+}
+
+@Override
+public int hashCode() {
+    return Objects.hash(board, currentTurn);
+}
