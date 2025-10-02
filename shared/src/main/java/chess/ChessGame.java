@@ -70,9 +70,15 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+
+        //find king of given team color here
+        //check if any opponent can capture
+        //how to find king on board
+        //once located how is it in danger can i use piece.pieceMoves?>
+        //ChessPosition kingPosition = findKing(teamColor);
         throw new RuntimeException("Not implemented");
     }
-//find king
+
 
     /**
      * Determines if the given team is in checkmate
@@ -81,8 +87,8 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
+
         throw new RuntimeException("Not implemented");
-        //in check ofc and not in check
     }
 
     /**
@@ -93,6 +99,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+
         throw new RuntimeException("Not implemented");
     }
 //check the not in check and no valid moves kinda vibe
@@ -115,6 +122,28 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return board;
     }
+
+    //private helper method(s)
+
+    private ChessPosition findKing(TeamColor team) {
+        //loop for all row
+        for (int row = 1; row <= 8; row++) {
+            //loop all columns
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);   //create chess pos for square
+                ChessPiece piece = board.getPiece(position); //get the piece at this position
+
+                //now is it piece here is there a king need a check for all of this and the color if yes then return this position
+
+
+            }
+        }
+        return null;//for some reason if king no where to be found saftey check here so it returns null
+    }
+
+
+
+
 
 //add my equals and hashcode + maybe other ovverrides
 
