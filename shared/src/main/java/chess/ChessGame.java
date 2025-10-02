@@ -1,6 +1,6 @@
 package chess;
 import java.util.Collection;
-
+import java.util.Objects;
 /**
  * For a class that can manage a chess game, making moves on a board
  * <p>
@@ -103,9 +103,9 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board; //store parameter into field
     }
-    return board;
+
 
     /**
      * Gets the current chessboard
@@ -113,22 +113,22 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return board;
     }
-    this.board =board; //store parameter into field
-}
+
 //add my equals and hashcode + maybe other ovverrides
 
-@Override
-public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    ChessGame game = (ChessGame) o;
-    return Objects.equals(board, game.board) &&
-            currentTurn == game.currentTurn;
-}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessGame game = (ChessGame) o;
+        return Objects.equals(board, game.board) &&
+                currentTurn == game.currentTurn;
+    }
 
-@Override
-public int hashCode() {
-    return Objects.hash(board, currentTurn);
+    @Override
+    public int hashCode() {
+        return Objects.hash(board, currentTurn);
+    }
 }
