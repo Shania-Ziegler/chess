@@ -102,7 +102,7 @@ public class ChessGame {
         executeMove(board, move);
         currentTurn = (currentTurn == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
     }
-    ;
+
 
 
     /**
@@ -152,8 +152,10 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-
-        throw new RuntimeException("Not implemented");
+        if (!isInCheck(teamColor)) {
+            return false;
+        }
+        return !hasAnyValidMoves(teamColor);
     }
 
     /**
