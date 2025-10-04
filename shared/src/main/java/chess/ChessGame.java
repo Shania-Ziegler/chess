@@ -71,12 +71,35 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
 
-        //find king of given team color here
-        //check if any opponent can capture
-        //how to find king on board
-        //once located how is it in danger can i use piece.pieceMoves?>
-        //ChessPosition kingPosition = findKing(teamColor);
-        throw new RuntimeException("Not implemented");
+        ChessPosition kingPosition = findKing(teamColor);
+
+        TeamColor opponentColor; //creates variable opponent color has no value
+
+        if (teamColor == TeamColor.WHITE) { //this actually will give value to Opponet color good
+            opponentColor = TeamColor.BLACK;
+        } else {
+            opponentColor = TeamColor.WHITE;
+        }
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+
+                // so this ask Is this an opponent piece?
+                if (piece != null && piece.getTeamColor() == opponentColor) {
+                    // Get all moves this opponent piece can make
+                    Collection<ChessMove> moves = piece.pieceMoves(board, position);
+
+                    // Check if any move attacks the king
+                    for (ChessMove move : moves) {
+                        if (move.getEndPosition().equals(kingPosition)) {
+                            return true;  // King is in check!
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 
@@ -132,8 +155,9 @@ public class ChessGame {
             for (int col = 1; col <= 8; col++) {
                 ChessPosition position = new ChessPosition(row, col);   //create chess pos for square
                 ChessPiece piece = board.getPiece(position); //get the piece at this position
-
-                //now is it piece here is there a king need a check for all of this and the color if yes then return this position
+                if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == team) {
+                    return position;
+                }
 
 
             }
