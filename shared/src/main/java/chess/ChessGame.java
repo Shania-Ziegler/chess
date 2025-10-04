@@ -166,8 +166,10 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-
-        throw new RuntimeException("Not implemented");
+        if (isInCheck(teamColor)) {
+            return false;
+        }
+        return !hasAnyValidMoves(teamColor);
     }
 //check the not in check and no valid moves kinda vibe
 
@@ -190,6 +192,8 @@ public class ChessGame {
         return board;
     }
 
+
+
     //private helper method(s)
 
     private ChessPosition findKing(TeamColor team) {
@@ -209,9 +213,85 @@ public class ChessGame {
         return null;//for some reason if king no where to be found saftey check here so it returns null
     }
 
+    private ChessPosition findKingOnBoard(ChessBoard testBoard, TeamColor team) {
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = testBoard.getPiece(position);
+                if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == team) {
+                    return position;
+                }
+            }
+        }
+        return null;
+    }
 
+    private boolean isKingInCheckOnBoard(ChessBoard testBoard, TeamColor teamColor) {
+        ChessPosition kingPosition = findKingOnBoard(testBoard, teamColor);
+        if (kingPosition == null) {
+            return false;
+        }
 
+        TeamColor opponentColor = (teamColor == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
 
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = testBoard.getPiece(position);
+
+                if (piece != null && piece.getTeamColor() == opponentColor) {
+                    Collection<ChessMove> moves = piece.pieceMoves(testBoard, position);
+
+                    for (ChessMove move : moves) {
+                        if (move.getEndPosition().equals(kingPosition)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private ChessBoard copyBoard() {
+        ChessBoard newBoard = new ChessBoard();
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+                if (piece != null) {
+                    ChessPiece newPiece = new ChessPiece(piece.getTeamColor(), piece.getPieceType());
+                    newBoard.addPiece(position, newPiece);
+                }
+            }
+        }
+        return newBoard;
+    }
+
+    private void executeMove(ChessBoard targetBoard, ChessMove move) {
+        ChessPiece piece = targetBoard.getPiece(move.getStartPosition());
+        targetBoard.addPiece(move.getStartPosition(), null);
+        if (move.getPromotionPiece() != null) {
+            piece = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
+        }
+        targetBoard.addPiece(move.getEndPosition(), piece);
+    }
+
+    private boolean hasAnyValidMoves(TeamColor teamColor) {
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    Collection<ChessMove> moves = validMoves(position);
+                    if (moves != null && !moves.isEmpty()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
 //add my equals and hashcode + maybe other ovverrides
 
