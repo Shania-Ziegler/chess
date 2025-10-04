@@ -1,6 +1,8 @@
 package chess;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.ArrayList;
+
 /**
  * For a class that can manage a chess game, making moves on a board
  * <p>
@@ -14,7 +16,7 @@ public class ChessGame {
     public ChessGame() {
         board = new ChessBoard();
         board.resetBoard();
-        currentTurn = TeamColor.WHITE; //white goes first in classical chess rules always
+        currentTurn = TeamColor.WHITE; //white goes first in classical chess rules always :D
     }
 
     /**
@@ -49,7 +51,24 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece = board.getPiece(startPosition);
+        if (piece == null) {
+            return null;
+        }
+
+        // Get all possible moves from the piece
+        Collection<ChessMove> allMoves = piece.pieceMoves(board, startPosition);
+        ArrayList<ChessMove> safeMoves = new ArrayList<>();
+
+        for (ChessMove move : allMoves) {
+            ChessBoard testBoard = copyBoard();
+            executeMove(testBoard, move);
+            if (!isKingInCheckOnBoard(testBoard, piece.getTeamColor())) {
+                safeMoves.add(move);
+            }
+        }
+
+        return safeMoves;
     }
 
     /**
@@ -59,9 +78,32 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
-        //move valid exectue it
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+
+        // Check if a piece is at the start position
+        if (piece == null) {
+            throw new InvalidMoveException("No piece at start position");
+        }
+
+        // Check if correct team turn
+        if (piece.getTeamColor() != currentTurn) {
+            throw new InvalidMoveException("Not turn");
+        }
+
+        // Get valid moves for this piece
+        Collection<ChessMove> validMovesList = validMoves(move.getStartPosition());
+
+        // Check if the move is in the valid moves list
+        if (validMovesList == null || !validMovesList.contains(move)) {
+            throw new InvalidMoveException("This is Invalid move");
+        }
+
+        // Move is valid, execute it
+        executeMove(board, move);
+        currentTurn = (currentTurn == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
     }
+    ;
+
 
     /**
      * Determines if the given team is in check
