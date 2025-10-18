@@ -1,7 +1,9 @@
 package chess;
 
+import java.util.Objects;
+
 /**
- * Represents moving a chess piece on a chessboard
+ * Represents moving a chess piece on a chessboard.
  * <p>
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
@@ -20,51 +22,46 @@ public class ChessMove {
     }
 
     /**
-     * @return ChessPosition of starting location
+     * @return starting location
      */
     public ChessPosition getStartPosition() {
         return startPosition;
-        //throw new RuntimeException("Not implemented");
     }
 
     /**
-     * @return ChessPosition of ending location
+     * @return ending location
      */
     public ChessPosition getEndPosition() {
         return endPosition;
-        //throw new RuntimeException("Not implemented");
     }
 
     /**
-     * Gets the type of piece to promote a pawn to if pawn promotion is part of this
-     * chess move
-     *
-     * @return Type of piece to promote a pawn to, or null if no promotion
+     * @return promotion piece type if pawn promotion,
+     * or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
         return promotionPiece;
-        // throw new RuntimeException("Not implemented");
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ChessMove) {
             ChessMove other = (ChessMove) obj;
-            return this.startPosition.equals(other.startPosition) &&
-                    this.endPosition.equals(other.endPosition) &&
-                    java.util.Objects.equals(this.promotionPiece, other.promotionPiece);
+            return startPosition.equals(other.startPosition)
+                    && endPosition.equals(other.endPosition)
+                    && Objects.equals(promotionPiece, other.promotionPiece);
         }
         return false;
-
     }
 
     @Override
     public int hashCode() {
-        return startPosition.hashCode() + endPosition.hashCode() * 31 +
-                (promotionPiece != null ? promotionPiece.hashCode() : 0);
+        return Objects.hash(startPosition, endPosition, promotionPiece);
     }
+
     @Override
     public String toString() {
-        return startPosition + "." + endPosition;
+        return startPosition + " -> " + endPosition +
+                (promotionPiece != null ? " = " + promotionPiece : "");
     }
 }

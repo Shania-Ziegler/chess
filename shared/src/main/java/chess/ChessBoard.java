@@ -1,5 +1,5 @@
 package chess;
-
+import java.util.Arrays;
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -8,10 +8,8 @@ package chess;
  */
 public class ChessBoard {
     private ChessPiece[][] board;
-
-
     public ChessBoard() {
-        board = new ChessPiece[8][8]; //8x8 board standard chess size 2darray representation
+        board = new ChessPiece[8][8]; // standard 8x8 chessboard
     }
 
     /**
@@ -21,110 +19,68 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        board[position.getRow() - 1][position.getColumn() - 1] = piece;
-        // Convert from chess rules on 8x8 (1-8) to array indices (0-7)
-        //ie Chess positions start at 1, but arrays start at 0
+        board[toIndex(position.getRow())][toIndex(position.getColumn())] = piece;
     }
 
     /**
      * Gets a chess piece on the chessboard
      *
      * @param position The position to get the piece from
-     * @return Either the piece at the position, or null if no piece is at that
-     * position
+     * @return Either the piece at the position, or null if none
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return board[position.getRow() - 1][position.getColumn() - 1];
-
+        return board[toIndex(position.getRow())][toIndex(position.getColumn())];
     }
 
     /**
-     * Sets the board to the default starting board
-     * (How the game of chess normally starts)
+     * Resets the board to the default starting layout.
      */
     public void resetBoard() {
-        // Clear the board first
         board = new ChessPiece[8][8];
-
-        // Set up starting positions for both teams
-        setupWhitePieces();
-        setupBlackPieces();
-    }
-
-    /**
-     * Places white pieces in their starting positions (rows 1-2)
-     */
-    private void setupWhitePieces() {
         setupBackRow(0, ChessGame.TeamColor.WHITE);
         setupPawnRow(1, ChessGame.TeamColor.WHITE);
-    }
-
-    /**
-     * Places black pieces in their starting positions (rows 7-8)
-     */
-    private void setupBlackPieces() {
         setupBackRow(7, ChessGame.TeamColor.BLACK);
         setupPawnRow(6, ChessGame.TeamColor.BLACK);
     }
 
-    /**
-     * Sets up the back row pieces (rook, knight, bishop, queen, king, bishop, knight, rook)
-     * @param row The row to place pieces (0 for white, 7 for black)
-     * @param color The team color of the pieces
-     */
+    /** Sets up the back row pieces. */
     private void setupBackRow(int row, ChessGame.TeamColor color) {
-        ChessPiece.PieceType[] backRowOrder = {
-                ChessPiece.PieceType.ROOK,
-                ChessPiece.PieceType.KNIGHT,
-                ChessPiece.PieceType.BISHOP,
-                ChessPiece.PieceType.QUEEN,
-                ChessPiece.PieceType.KING,
-                ChessPiece.PieceType.BISHOP,
-                ChessPiece.PieceType.KNIGHT,
-                ChessPiece.PieceType.ROOK
+        ChessPiece.PieceType[] order = {
+                ChessPiece.PieceType.ROOK, ChessPiece.PieceType.KNIGHT,
+                ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.QUEEN,
+                ChessPiece.PieceType.KING, ChessPiece.PieceType.BISHOP,
+                ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.ROOK
         };
-
         for (int col = 0; col < 8; col++) {
-            board[row][col] = new ChessPiece(color, backRowOrder[col]);
+            board[row][col] = new ChessPiece(color, order[col]);
         }
     }
 
-    /**
-     * Sets up a row of pawns
-     * @param row The row to place pawns (1 for white, 6 for black)
-     * @param color The team color of the pawns
-     */
+    /** Sets up a row of pawns. */
     private void setupPawnRow(int row, ChessGame.TeamColor color) {
         for (int col = 0; col < 8; col++) {
             board[row][col] = new ChessPiece(color, ChessPiece.PieceType.PAWN);
         }
     }
 
-
-     // Compares two chess boards for equality
+    /** Helper: convert chess row/col (1–8) to array index (0–7). */
+    private int toIndex(int num) {
+        return num - 1;
+    }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof ChessBoard) {
-            ChessBoard other = (ChessBoard) obj;
-            return java.util.Arrays.deepEquals(this.board, other.board);
-        }
-    return false;
-}
+        return (obj instanceof ChessBoard)
+                && Arrays.deepEquals(board, ((ChessBoard) obj).board);
+    }
 
     @Override
     public int hashCode() {
-        return java.util.Arrays.deepHashCode(board);
-}
-
-   //Returns a simple string representation of the board
-     // Could be improved to show actual board layout for debugging
+        return Arrays.deepHashCode(board);
+    }
 
     @Override
     public String toString() {
         return "ChessBoard with pieces";
     }
 }
-
-
-
