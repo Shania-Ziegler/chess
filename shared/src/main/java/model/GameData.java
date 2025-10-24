@@ -1,6 +1,6 @@
 package model;
 
-public class GameRecord {
+public class GameData {
     /*
 
  this holds info related to one any specific chess game needs
