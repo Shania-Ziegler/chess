@@ -15,4 +15,3 @@ public interface GameDAO {
 
     void updateGame(GameData game) throws DataAccessException;
 }
-
