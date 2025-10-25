@@ -9,26 +9,13 @@ public class MemoryUserDAO implements UserDAO{
 
     private final Map<String, UserData> users = new HashMap<>();
 
-    /*
-   do users come from where my user data right i am not sure yet how to implement
-   look at the map to see whrre i can put in but need something like
-
-   user.get
-   user.put
-   ect
-     */
-
-
     @Override
-    public void clear() throws DataAccessException{
-        HashMap.clear<>(UserData);
-
-        //my hashmap method and empty hash map
+    public void clear() throws DataAccessException {
+        users.clear; //remove user from hashmap
     }
 
     @Override
     public void createUser(UserData user) throws DataAccessException{
-        //check if user is null or user name is null throw error for bad request if so
 
         if(user == null){
             throw new DataAccessException("Error Bad Request user object is null");
@@ -37,6 +24,10 @@ public class MemoryUserDAO implements UserDAO{
         if(user.username() == null){
             throw new DataAccessException("Username is missing or blank retry");
         }
+
+    }
+
+
 
         //stores user
         user.put(key, value)
