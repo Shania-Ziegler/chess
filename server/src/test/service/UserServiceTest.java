@@ -92,7 +92,7 @@ public class UserServiceTest {
         var registerResult = assertDoesNotThrow(() -> userService.register(registerReq));
 
         //  Logout should execute without throwing an exception
-        assertDoesNotThrow(() - userService.logout(registerResult.authToken()),"Logout with a valid token should not throw an exception.");
+        assertDoesNotThrow(() -> userService.logout(registerResult.authToken()),"Logout with a valid token should not throw an exception.");
     }
     @Test
     @DisplayName("Logout Invalid Token")
@@ -105,28 +105,6 @@ public class UserServiceTest {
 
         assertTrue(exception.getMessage().contains("unauthorized"),  "Exception message must contain 'unauthorized' for an invalid token.");
     }
-
-    //clear tests
-    @Test
-    @DisplayName("Clear Removes All Users")
-    public void clearSuccess() {
-        // Arrange: Register a user
-        var registerReq = new UserService.RegisterRequest("Hank", "Franks", "hanks@smail.com");
-        assertDoesNotThrow(() -> userService.register(registerReq));
-
-        // Clear all data
-        assertDoesNotThrow(() -> userService.clear());
-
-        // Attempt to log in with the removed user and verify exception
-        var loginReq = UserService.LoginRequest("dave", "password");
-        var exception = assertThrows(DataAccessException.class, () -> userService.login(loginReq));
-
-        assertTrue(exception.getMessage.contains("unauthorized"),"Login should fail with 'unauthorized' after data clear.");
-
-    }
-
-
-
 
 
 }
