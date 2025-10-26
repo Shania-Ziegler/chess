@@ -48,9 +48,7 @@ return relust
     }
 
     public void logout(String authToken) throws DataAccessException {
-        if (authToken == null) {
-            throw new DataAccessException("Error: unauthorized");
-        }
+        authDAO.deleteAuth(authToken);
     }
 
     public void clear() throws DataAccessException{
