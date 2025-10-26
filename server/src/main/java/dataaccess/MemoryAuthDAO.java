@@ -20,11 +20,14 @@ public class MemoryAuthDAO implements AuthDAO {
         if(auth == null || auth.authToken() == null){
             throw new DataAccessException("Error Bad request");
         }
+        authTokens.put(auth.authToken(), auth);
     }
 
 
     //check to see if token valid and tells server if someone logged in?
     @Override
+    public AuthData getAuth(string auth)
+
 
     //delete auth
     @Override
