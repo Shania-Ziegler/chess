@@ -20,7 +20,7 @@ public UserService (UserDAO userDAO, AuthDAO authDAO) {
 
     public record RegisterRequest(String username, String password, String email){}
     public record RegisterResult(String username, String authToken){}
-    public record LoginRequest(String username, String authToken){}
+    public record LoginRequest(String username, String password){}
     public record LoginResult(String username, String authToken){}
 
     public RegisterResult register(RegisterRequest req) throws DataAccessException {
@@ -41,17 +41,22 @@ public UserService (UserDAO userDAO, AuthDAO authDAO) {
 
 
     public LoginResult login(LoginRequest req) throws DataAccessException {
-        if (req.username == null || req.password == null) {
+        if (req.username() == null || req.password() == null) {
             throw new DataAccessException("Error: bad request");
         }
+        //get userfrom database then verify user + password
+        UserData user = userDAO.getUser(req.username());
 
-        /*
-        get user from database
-        veryfiy user exists
-        generate auth token
-        create + store auth data
-        return reuslt
-         */
+        if(user == null || !user.password().equals(req.password())){
+            throw new DataAccessException("Error: unauthorized");
+        }
+
+        String authToken = UUID.randomUUID().toString();
+
+        AuthData auth = new AuthData(authToken, req.username());
+        authDAO.createAuth(auth);
+
+        return new LoginResult(req.username(), authToken);
     }
 
     public void logout(String authToken) throws DataAccessException {
