@@ -16,10 +16,16 @@ public UserService (UserDAO userDAO, AuthDAO authDAO) {
     this.authDAO = authDAO;
 
 }
+
+public RegisterResult register(RegisterRequest req) throws DataAccessException{
+    if(req.username()==null||req.password()==null || req.email()==null){
+        throw new DataAccessException;
+    }
+}
     public record RegisterRequest(String username, String password, String email){}
-    public record RegisterResult()
-    public record LoginRequest()
-    public record LoginResult
+    public record RegisterResult(String username, String authToken){}
+    public record LoginRequest(String username, String authToken){}
+    public record LoginResult(String username, String authToken){}
 
 /*
 create user data
@@ -33,8 +39,8 @@ create/store auth data
 return relust
  */
 
-    public LoginResult login(LoginRequest userreq) throws DataAccessException {
-        if (userreq.username == null || userreq.password == null) {
+    public LoginResult login(LoginRequest req) throws DataAccessException {
+        if (req.username == null || req.password == null) {
             throw new DataAccessException("Error: bad request");
         }
 
