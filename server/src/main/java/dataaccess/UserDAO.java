@@ -10,7 +10,8 @@ public interface UserDAO {
 
     void clear() throws DataAccessException; //Removes all users from storage as test
 
-    void createUser(UserData user); // save new user into storage
+    void createUser(UserData user) throws DataAccessException; // save new user into storage
 
     UserData getUser(String username) throws DataAccessException; //find user by username
+
 }
