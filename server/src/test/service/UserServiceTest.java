@@ -69,5 +69,20 @@ public class UserServiceTest {
 
     }
 
+    @Test
+    @DisplayName("Login Wrong Password")
+    public void loginWrongPassword() {
+        //  Setup user
+        var registerReq = new UserService.RegisterRequest("emily", "mypassword", "emily@test.com");
+        assertDoesNotThrow(() -> userService.register(registerReq));
+
+        // Attempt login with wrong password and verify the exception
+        var loginReq = new UserService.LoginRequest("emily", "wrongpassword");
+
+        var exception = assertThrows(DataAccessException.class, () -> userService.login(loginReq));
+
+        assertTrue(exception.getMessage().contains("unauthorized"), "Exception message must contain 'unauthorized' for wrong credientials.");
+    }
+
 
 }
