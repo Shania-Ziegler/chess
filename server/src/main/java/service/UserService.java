@@ -5,8 +5,8 @@ import model.UserData;
 import java.util.UUID;
 
 public class UserService{
-    String UserDAO;
-    String AuthDAO;
+    private final UserDAO;
+    private final AuthDAO;
 
 public UserService (UserDAO userDAO, AuthDAO authDAO) {
     this.userDAO = UserDAO;
