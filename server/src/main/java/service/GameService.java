@@ -48,6 +48,25 @@ public GameService(GameDAO gameDAO, AuthDAO authDAO){
             throw new DataAccessException("Error bad request")
         }
 
+        GameData game = gameDAO.getGame(req.GameID());
+        if(game == null){
+            throw new DataAccessException("Error bar request");
+        }
+        //check colors update game
+        String color = req.playerColor().toUpperCase();
+        if(color.equals("WHITE")) {
+            if (game.whiteUsername() != null) {
+                throw new DataAccessException("Error: already taken");
+            }
+            GameData updateGame = new GameData(game.gameID(), auth.username(), game.blackUsername,game.gameName, game.game);
+            gameDAO.updateGame(updateGame);
+        }else if (color.equals("BLACK")){
+            if(game.blackUsername() != null) {
+                throw new DataAccessException("Error: already taken");
+            }
+            }
+        }
+        }
 
         }
 
