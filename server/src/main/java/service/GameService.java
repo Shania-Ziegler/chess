@@ -74,6 +74,12 @@ public GameService(GameDAO gameDAO, AuthDAO authDAO){
         public void clear() throws DataAccessException{
         gameDAO.clear();
         }
+        private AuthData validateAuth(String authToken) throws DataAccessException{
+        if(authToken == null){
+            throw new DataAccessException("Error: unauthorized");
+        }
+        return auth;
+        }
         }
 
 }
