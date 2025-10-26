@@ -84,5 +84,16 @@ public class UserServiceTest {
         assertTrue(exception.getMessage().contains("unauthorized"), "Exception message must contain 'unauthorized' for wrong credientials.");
     }
 
+    @Test
+    @DisplayName("Logout Success")
+    public void logoutSuccess() {
+        //Register and get a valid auth token
+        var registerReq = new UserService.RegisterRequest("zapsy", "pass456", "zapsy@test.com");
+        var registerResult = assertDoesNotThrow(() -> userService.register(registerReq));
+
+        //  Logout should execute without throwing an exception
+        assertDoesNotThrow(() - userService.logout(registerResult.authToken()),"Logout with a valid token should not throw an exception.");
+    }
+
 
 }
