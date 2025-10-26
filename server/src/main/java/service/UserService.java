@@ -4,12 +4,16 @@ import dataaccess.UserDAO;
 import model.UserData;
 import java.util.UUID;
 
-public class UserService(UserDAO userDAO, AuthDAO authDAO) {
-    this.userDAO =UserDAO;
-    this.authDAO =authDAO;
+public class UserService{
+    String UserDAO;
+    String AuthDAO;
 
+public UserService (UserDAO userDAO, AuthDAO authDAO) {
+    this.userDAO = UserDAO;
+    this.authDAO = authDAO;
 
-//request and result record
+}
+    //request and result record
 
 //register
 
