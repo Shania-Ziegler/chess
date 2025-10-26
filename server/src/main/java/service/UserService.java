@@ -1,15 +1,18 @@
 package service;
 
 import dataaccess.UserDAO;
+import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import model.UserData;
+import model.AuthData;
 import java.util.UUID;
 
 public class UserService{
-    private final UserDAO;
-    private final AuthDAO;
+    private final UserDAO userDAO;
+    private final AuthDAO authDAO;
 
 public UserService (UserDAO userDAO, AuthDAO authDAO) {
-    this.userDAO = UserDAO;
+    this.userDAO = userDAO;
     this.authDAO = authDAO;
 
 }
