@@ -21,7 +21,7 @@ public class UserServiceTest {
         userDAO = new MemoryUserDAO();
         authDAO = new MemoryAuthDAO();
 
-        userService = new (userDAO, authDAO);
+        userService = new UserService(userDAO, authDAO);
     }
 
     @Test
@@ -29,5 +29,15 @@ public class UserServiceTest {
 
     public void registerSuccess() throws DataAccessException {
         var request = new UserService.RegisterRequest("zap", "password!", "email12")
+
+        var result = userService.register(request);
+
+        //verify correct results
+
+        assertNotNull(result.authToken());
+
+        assertEquals("zap",result.username());
     }
+
+
 }
