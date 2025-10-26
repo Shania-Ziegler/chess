@@ -17,9 +17,14 @@ public class MemoryUserDAO implements UserDAO {
     @Override
     public void createUser(UserData user) throws DataAccessException {
         if (user == null || user.username() == null) {
-            throw new DataAccessException("Bad Request");
+            throw new DataAccessException("Error: bad Request");
         }
-    users.put(username(), user); //stores user
+
+
+        if(users.containsKey(user.username())){
+            throw new DataAccessException("Error: username already taken");
+        }
+    users.put(user.username(), user); //stores user
     }
 
 
