@@ -33,5 +33,24 @@ public GameService(GameDAO gameDAO, AuthDAO authDAO){
     int gameID = gameDAO.createGame(game);
 
     return new CreateGameResult(gameID);
+
+    public ListGamesResult listGames(String authToken) throws DataAccessException{
+        validateAuth(authToken);
+
+        Collection<GameData> games = GameDAO.listGames();
+        return new ListGamesResult(game);
+        }
+
+        public void joinGame(String authToken, JoinGameRequest req)throws DataAccessException{
+        AuthData auth = validateAuth(authToken);
+
+        if(req.gameID() == null || req.playerColor()==null){
+            throw new DataAccessException("Error bad request")
+        }
+
+
+        }
+
 }
+
 
