@@ -15,5 +15,9 @@ public class GameServiceTest {
 
 @BeforeEach
 public void setup(){
-
+    userDAO = new MemoryUserDAO();
+    authDAO = new MemoryAuthDAO();
+    gameDA0 = new MemoryGameDAO();
+    userService = new UserService(userDAO, authDAO);
+    gameService = new GameService(gameDAO, authDAO);
 }
