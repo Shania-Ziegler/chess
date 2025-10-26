@@ -28,7 +28,7 @@ public class UserServiceTest {
     @DisplayName("Register Success")
 
     public void registerSuccess() throws DataAccessException {
-        var request = new UserService.RegisterRequest("zap", "password!", "email12")
+        var request = new UserService.RegisterRequest("zap", "password!", "email12");
 
         var result = userService.register(request);
 
@@ -38,6 +38,23 @@ public class UserServiceTest {
 
         assertEquals("zap",result.username());
     }
+
+    @Test
+    @DisplayName("Register for duplicate username test")
+
+    public void registerDuplicate() throws DataAccessException{
+        var req1 = new UserService.RegisterRequest("zap","password!","email12");userService.register(req1);
+
+        var req2 = new UserService.RegisterRequest("zap","pas123","ziggles");
+
+
+        //check if code throws excpected exception with () ->
+        var exception = assertThrows(DataAccessException.class,() -> userService.register(req2));
+
+        assertTrue(exception.getMessage().contains("Username 'zap' already exists"));
+    }
+
+
 
 
 }
