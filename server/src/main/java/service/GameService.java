@@ -64,10 +64,16 @@ public GameService(GameDAO gameDAO, AuthDAO authDAO){
             if(game.blackUsername() != null) {
                 throw new DataAccessException("Error: already taken");
             }
-            }
-        }
+            GameData updateGame = new GameData(game.gameID(),game.whiteUsername(),auth.username(),game.gameName(),game.game());
+            gameDAO.updateGame(updateGame);
+            }else {
+            throw new DataAccessException("Error: bad request");
         }
 
+        }
+        public void clear() throws DataAccessException{
+        gameDAO.clear();
+        }
         }
 
 }
