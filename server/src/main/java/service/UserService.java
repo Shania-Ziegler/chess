@@ -17,27 +17,28 @@ public UserService (UserDAO userDAO, AuthDAO authDAO) {
 
 }
 
-public RegisterResult register(RegisterRequest req) throws DataAccessException{
-    if(req.username()==null||req.password()==null || req.email()==null){
-        throw new DataAccessException;
-    }
-}
+
     public record RegisterRequest(String username, String password, String email){}
     public record RegisterResult(String username, String authToken){}
     public record LoginRequest(String username, String authToken){}
     public record LoginResult(String username, String authToken){}
 
-/*
-create user data
-saveuser data to database
-call userdao.createuser(user)
+    public RegisterResult register(RegisterRequest req) throws DataAccessException {
+        if (req.username() == null || req.password() == null || req.email() == null) {
+            throw new DataAccessException("Error: bad request");
+        }
+        UserData user = new UserData(req.username(),req.password(),req.email());
+        userDAO.createUser(user);
 
-create token using the uuid random to string
+        //gen auth token
+        String authToken = UUID.randomUUID().toString();
 
-create/store auth data
+        AuthData auth = new AuthData(authToken, req.username());
+        authDAO.createAuth(auth);
 
-return relust
- */
+        return new RegisterResult(req.username(),authToken);
+    }
+
 
     public LoginResult login(LoginRequest req) throws DataAccessException {
         if (req.username == null || req.password == null) {
