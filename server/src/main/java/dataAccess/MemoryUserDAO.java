@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class MemoryUserDAO implements UserDAO{
+public class MemoryUserDAO implements UserDAO {
 
     private final Map<String, UserData> users = new HashMap<>();
 
@@ -15,18 +15,12 @@ public class MemoryUserDAO implements UserDAO{
     }
 
     @Override
-    public void createUser(UserData user) throws DataAccessException{
-
-        if(user == null || user.username() == null){
+    public void createUser(UserData user) throws DataAccessException {
+        if (user == null || user.username() == null) {
             throw new DataAccessException("Bad Request");
         }
-
+    users.put(username(), user); //stores user
     }
-
-
-
-        //stores user
-        user.put(key, value)
 
 
 
