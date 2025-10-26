@@ -16,7 +16,6 @@ public GameService(GameDAO gameDAO, AuthDAO authDAO){
     this.gameDAO = gameDAO;
     this.authDAO = authDAO;
 }
-    //create game list game
 
     public record CreateGameRequest{String gameName){}
     public record JoinGameRequest(String playerColor, Integer gameID){}
@@ -30,7 +29,9 @@ public GameService(GameDAO gameDAO, AuthDAO authDAO){
         throw new DataAccessException("Error: bad request");
     }
 
-    GameData game = new GameData(0)
+    GameData game = new GameData(0,null,null,req.gameName(), new ChessGame());
+    int gameID = gameDAO.createGame(game);
 
+    return new CreateGameResult(gameID);
 }
 
