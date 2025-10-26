@@ -29,7 +29,7 @@ public class MemoryAuthDAO implements AuthDAO {
     //delete auth
     @Override
     public void deleteAuth(String authToken) throws DataAccessException{
-        if(authToken == null || authTokens.haskey(authToken)){
+        if(authToken == null || !authTokens.containsKey(authToken)){
             throw new DataAccessException("Error unauthorized");
         }
      authTokens.remove(authToken);
