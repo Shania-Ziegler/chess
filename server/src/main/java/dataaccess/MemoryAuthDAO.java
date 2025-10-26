@@ -26,7 +26,9 @@ public class MemoryAuthDAO implements AuthDAO {
 
     //check to see if token valid and tells server if someone logged in?
     @Override
-    public AuthData getAuth(string auth)
+    public AuthData getAuth(String authToken) throws DataAccessException{
+        return authTokens.get(authToken);
+    }
 
 
     //delete auth
