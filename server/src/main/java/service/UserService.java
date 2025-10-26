@@ -16,9 +16,10 @@ public UserService (UserDAO userDAO, AuthDAO authDAO) {
     this.authDAO = authDAO;
 
 }
-    //request and result record
-
-//register
+    public record RegisterRequest(String username, String password, String email){}
+    public record RegisterResult()
+    public record LoginRequest()
+    public record LoginResult
 
 /*
 create user data
@@ -53,6 +54,8 @@ return relust
     }
 
     public void clear() throws DataAccessException{
+        userDAO.clear();
+        authDAO.clear();
 
     }
 
