@@ -25,20 +25,13 @@ public class MemoryUserDAO implements UserDAO {
 
 
     //check if user exist in hash map
-
-    if (users.containsKey(User)){
-        throw new DataAccessException("Error username already taken");
-    }
-
-    if(users.containsKey  )
-
     @Override
     public UserData getUser(String username)
-        throws DataAccessException{
+        throws DataAccessException {
         /*
         look up username in hash map return user data return value or null
          */
-        return key;
+        return users.get(username);
     }
 
 }
