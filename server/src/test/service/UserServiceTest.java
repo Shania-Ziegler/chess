@@ -1,8 +1,6 @@
 package service;
 
 import dataaccess.*;
-import service.*;
-import model.*;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*; //use methods without using Assertions. before

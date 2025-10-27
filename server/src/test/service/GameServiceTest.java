@@ -1,8 +1,8 @@
 package service;
 
 import dataaccess.*;
-import model.*;
 import org.junit.jupiter.api.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameServiceTest {
@@ -13,14 +13,14 @@ public class GameServiceTest {
     private GameService gameService;
 
 
-@BeforeEach
-public void setup(){
+    @BeforeEach
+    public void setup() {
     userDAO = new MemoryUserDAO();
     authDAO = new MemoryAuthDAO();
     gameDAO = new MemoryGameDAO();
     userService = new UserService(userDAO, authDAO);
     gameService = new GameService(gameDAO, authDAO);
-}
+    }
 
     private String registerGetToken(String username) {
         var request = new UserService.RegisterRequest(username, "password", username + "@test.com");
@@ -110,7 +110,9 @@ public void setup(){
     public void clearGames() throws DataAccessException {
 
     String token = registerGetToken("player6");
-    var gameReq = new GameService.CreateGameRequest("Test Game"); assertDoesNotThrow(() -> gameService.createGame(token, gameReq));assertDoesNotThrow(() -> gameService.clear());
+    var gameReq = new GameService.CreateGameRequest("Test Game");
+    assertDoesNotThrow(() -> gameService.createGame(token, gameReq));
+    assertDoesNotThrow(() -> gameService.clear());
 
     var result = assertDoesNotThrow(() -> gameService.listGames(token));assertEquals(0, result.games().size(), "Games list size must be zero after clear.");
 }
