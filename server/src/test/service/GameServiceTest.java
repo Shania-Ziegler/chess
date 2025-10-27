@@ -1,9 +1,7 @@
-package java.service;
+package service;
 
 import dataaccess.*;
 import org.junit.jupiter.api.*;
-import service.GameService;
-import service.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -113,9 +111,13 @@ public class GameServiceTest {
 
     String token = registerGetToken("player6");
     var gameReq = new GameService.CreateGameRequest("Test Game");
+
     assertDoesNotThrow(() -> gameService.createGame(token, gameReq));
+
     assertDoesNotThrow(() -> gameService.clear());
 
-    var result = assertDoesNotThrow(() -> gameService.listGames(token));assertEquals(0, result.games().size(), "Games list size must be zero after clear.");
+    var result = assertDoesNotThrow(() -> gameService.listGames(token));
+    assertEquals(0, result.games().size(),
+            "Games list size must be zero after clear.");
 }
 }

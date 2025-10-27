@@ -1,4 +1,4 @@
-package java.service;
+package service;
 
 import dataaccess.*;
 import org.junit.jupiter.api.*;
