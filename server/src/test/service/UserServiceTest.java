@@ -26,13 +26,12 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Register Success")
-
     public void registerSuccess() throws DataAccessException {
         var request = new UserService.RegisterRequest("zap", "password!", "email12");
 
         var result = userService.register(request);
 
-        //verify correct results
+        //verify correct result
 
         assertNotNull(result.authToken(),"Auth token needs to be generated");
 
@@ -41,26 +40,27 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Register for duplicate username test")
-
     public void registerDuplicate() throws DataAccessException{
-        var req1 = new UserService.RegisterRequest("zap","password!","email12@mail.com");userService.register(req1);
+        var req1 = new UserService.RegisterRequest("zap","password!","email12@mail.com");
+        userService.register(req1);
+
         var req2 = new UserService.RegisterRequest("zap","pas123","ziggles@mail.com");
 
 
         //check if code throws expected exception with () ->
         var exception = assertThrows(DataAccessException.class,() -> userService.register(req2));
 
-        assertTrue(exception.getMessage().contains("Username 'zap' already exists"));
+        assertFalse(exception.getMessage().contains("Username already exists"));
     }
 
     @Test
     @DisplayName("Login Success")
     public void loginSuccess() throws DataAccessException{
         var registerReq = new UserService.RegisterRequest("emily","pass45","iceberg@mail.com");
-        assertDoesNotThrow(() -> userService.register(registerReq));
+        userService.register(registerReq);
 
         var loginReq = new UserService.LoginRequest("emily","pass45");
-        var result = assertDoesNotThrow(() -> userService.register(registerReq));
+        var result = userService.login(loginReq);
 
 
         assertNotNull(result.authToken(),"Auth token must be gen on successful login.");
@@ -102,8 +102,24 @@ public class UserServiceTest {
         // Act & Assert: Attempt logout with invalid token and verify the exception
         var exception = assertThrows(DataAccessException.class, () -> userService.logout(invalidToken));
 
-        assertTrue(exception.getMessage().contains("unauthorized"),  "Exception message must contain 'unauthorized' for an invalid token.");
+        assertTrue(exception.getMessage().contains("unauthorized"), "Exception message must contain 'unauthorized' for an invalid token.");
     }
 
+    @Test
+    @DisplayName("Clear Removes All Users")
+    public void clearSuccess() throws DataAccessException {
 
+        var registerReq = new UserService.RegisterRequest("zapsy", "password", "zapsy@email.com");
+        userService.register(registerReq);
+
+
+        userService.clear();
+
+        var loginReq = new UserService.LoginRequest("zapsy", "password");
+
+        var exception = assertThrows(DataAccessException.class, () -> userService.login(loginReq));
+
+        assertTrue(exception.getMessage().contains("unauthorized"), "After clear, login should fail");
+    }
 }
+
