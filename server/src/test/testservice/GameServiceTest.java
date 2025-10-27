@@ -1,7 +1,9 @@
-package service;
+package testservice;
 
 import dataaccess.*;
 import org.junit.jupiter.api.*;
+import service.GameService;
+import service.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
 

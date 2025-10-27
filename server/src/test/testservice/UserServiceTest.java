@@ -1,4 +1,4 @@
-package service;
+package testservice;
 
 import dataaccess.*;
 import org.junit.jupiter.api.*;
