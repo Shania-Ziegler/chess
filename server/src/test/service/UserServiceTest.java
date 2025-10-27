@@ -44,7 +44,6 @@ public class UserServiceTest {
 
     public void registerDuplicate() throws DataAccessException{
         var req1 = new UserService.RegisterRequest("zap","password!","email12@mail.com");userService.register(req1);
-        assertDoesNotThrow(() -> userService.register(req1));
         var req2 = new UserService.RegisterRequest("zap","pas123","ziggles@mail.com");
 
 
