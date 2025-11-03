@@ -29,9 +29,26 @@ public class SQLUserDAO implements UserDAO {
     }
 
     @Override
-    public void createUser(UserData user) throwsDataAccessException{
-        throw new DataAccessException("To be implemented");
+    public void createUser(UserData user) throws DataAccessException {
+        var sql = "INSERT INTO users(username, password, email) VALUES (?, ?, ?)";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var stmt = conn.prepareStatement(sql)) {
+                //hash pass before store
+                String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
+
+                stmt.setString(1, user.username());
+                stmt.setString(2, hashedPassword);
+                stmt.setString(3, user.email());
+
+                stmt.executeUpdate();
+
+            }
+            }catch (SQLException e) {
+            throw new DataAccessException("Error creating user: " + e.getMessage());
+        }
     }
+
+
     @Override
     public UserData getUser(String username) throwsDataAccessException {
         throw new DataAccessException("To be implemented");
