@@ -2,17 +2,17 @@ package dataaccess;
 
 import model.UserData;
 import java.sql.SQLException;
-import org.mindrot.jbcrypt.BCrypt; //pass hashing
+import org.mindrot.jbcrypt.BCrypt;
 
 public class SQLUserDAO implements UserDAO {
 
-    public SQLUserDAO() throws DataAccessException{
+    public SQLUserDAO() throws DataAccessException {
         configureDatabase();
     }
 
     private void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
-        try(var conn = DatabaseManager.getConnection()) { //conn is connection object
+        try (var conn = DatabaseManager.getConnection()) { //conn is connection object
             var createTableSQL =
                     """
                             CREATE TABLE IF NOT EXISTS users (
@@ -22,11 +22,12 @@ public class SQLUserDAO implements UserDAO {
             try (var stmt = conn.prepareStatement(createTableSQL)) { //stm prepared statement objecct
                 stmt.executeUpdate();
             }
-        }catch (SQLException e){
-                throw new DataAccessException("Unable to configure database:" + e.getMessage());
-            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Unable to configure database:" + e.getMessage());
         }
     }
+
+
 
     @Override
     public void createUser(UserData user) throws DataAccessException {
@@ -43,18 +44,54 @@ public class SQLUserDAO implements UserDAO {
                 stmt.executeUpdate();
 
             }
-            }catch (SQLException e) {
+
+        }catch (SQLException e) {
             throw new DataAccessException("Error creating user: " + e.getMessage());
         }
     }
 
 
     @Override
-    public UserData getUser(String username) throwsDataAccessException {
-        throw new DataAccessException("To be implemented");
-    }
-    public void clear() throwsDataAccessException{
-        throw new DataAccessException("To be implemented");
-    }
+    public UserData getUser(String username) throws DataAccessException {
+        var sql = "SELECT username, password, email FROM users WHERE username = ?";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, username);
 
+            try (var rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    String user = rs.getString("username");
+                    String password = rs.getString("password");
+                    String email = rs.getString("email");
+                    return new UserData(user, password, email);
+                }
+            }
+        }
+    }catch (SQLException e){
+        throw new DataAccessException("Error getting user: " + e.getMessage());
+        }
+        return null;
+        }
+
+    @Override
+    public void clear() throws DataAccessException {
+        var sql = "DELETE FROM users";
+        try (var conn = DatabaseManager.getConnection()) {
+
+        } catch (SQLException | DataAccessException e) {
+            try {
+                throw new DataAccessException("Error clearing users:" + e.getMessage()) {
+
+
+                };
+            } catch (DataAccessException ex) {
+                throw new RuntimeException(ex);
+            }
+
+        }
+
+    }
 }
+
+
+
