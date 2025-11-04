@@ -1,8 +1,6 @@
 package service;
 
-import dataaccess.AuthDAO;
-import dataaccess.GameDAO;
-import dataaccess.DataAccessException;
+import dataaccess.*;
 import model.AuthData;
 import model.GameData;
 import chess.ChessGame;
@@ -15,6 +13,11 @@ public class GameService {
     public GameService(GameDAO gameDAO, AuthDAO authDAO) {
         this.gameDAO = gameDAO;
         this.authDAO = authDAO;
+    }
+
+    public GameService() throws DataAccessException{
+        this.gameDAO = new SQLGameDAO();
+        this.authDAO = new SQLAuthDAO();
     }
 
     public record CreateGameRequest(String gameName) {
