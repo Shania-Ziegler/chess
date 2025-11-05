@@ -3,11 +3,11 @@ package server;
 import com.google.gson.Gson;
 import io.javalin.*;
 import io.javalin.http.*;
-import dataaccess.*; //wild card import
+import dataaccess.*;
 import service.*;
 import java.util.Map;
 import dataaccess.DataAccessException;
-
+import java.util.Locale;
 
 public class Server {
 
@@ -23,28 +23,31 @@ public class Server {
 
 
     public Server() throws DataAccessException {
-            this.userDAO = new SQLUserDAO();
-            this.authDAO = new SQLAuthDAO();
-            this.gameDAO = new SQLGameDAO();
 
-            this.userService = new UserService(userDAO, authDAO);
-            this.gameService = new GameService(gameDAO, authDAO);
 
-            javalin = Javalin.create(config -> config.staticFiles.add("web"));
+        this.userDAO = new SQLUserDAO();
+        this.authDAO = new SQLAuthDAO();
+        this.gameDAO = new SQLGameDAO();
 
-            // register end points
-            javalin.post("/user", this::register);
-            javalin.post("/session", this::login);
-            javalin.delete("/session", this::logout);
-            javalin.get("/game", this::listGames);
-            javalin.post("/game", this::createGame);
-            javalin.put("/game", this::joinGame);
-            javalin.delete("/db", this::clear);
+        this.userService = new UserService(userDAO, authDAO);
+        this.gameService = new GameService(gameDAO, authDAO);
 
-            javalin.exception(DataAccessException.class, this::handleException);
-            javalin.exception(Exception.class, this::handleGeneralException);
+        javalin = Javalin.create(config -> config.staticFiles.add("web"));
+
+        // Register end points
+        javalin.post("/user",this::register);
+        javalin.post("/session", this::login);
+        javalin.delete("/session", this::logout);
+        javalin.get("/game", this::listGames);
+        javalin.post("/game",this::createGame);
+        javalin.put("/game", this::joinGame);
+        javalin.delete("/db", this::clear);
+
+
+        javalin.exception(DataAccessException.class, this::handleException);
+        javalin.exception(Exception.class, this::handleGeneralException);
+
     }
-
     private void handleGeneralException(Exception ex, Context ctx) {
 
         ctx.status(500);
@@ -63,79 +66,74 @@ public class Server {
 
 
     private void register(Context ctx) throws DataAccessException {
-    var request = gson.fromJson(ctx.body(), UserService.RegisterRequest.class);
-    var result = userService.register(request); //call service
+        var request = gson.fromJson(ctx.body(), UserService.RegisterRequest.class);
+        var result = userService.register(request);
 
-    //convert to JSON send back to client
-    ctx.status(200);
-    ctx.json(gson.toJson(result));
-}
-
-private void logout(Context ctx) throws DataAccessException{
-    String authToken = ctx.header("authorization");
-    userService.logout(authToken);
-    ctx.status(200);
-    ctx.json("{}");
-}
-
-private void login(Context ctx) throws DataAccessException{
-    var request = gson.fromJson(ctx.body(), UserService.LoginRequest.class);
-    var result = userService.login(request);
-    ctx.status(200);
-    ctx.json(gson.toJson(result));
-}
-private void listGames(Context ctx) throws DataAccessException {
-    String authToken = ctx.header("authorization");
-    var result = gameService.listGames(authToken);
-    ctx.status(200);
-    ctx.json(gson.toJson(result));
-}
-
-private void createGame(Context ctx) throws DataAccessException {
-    String authToken = ctx.header("authorization");
-    var request = gson.fromJson(ctx.body(), GameService.CreateGameRequest.class);
-    var result = gameService.createGame(authToken, request);
-    ctx.status(200);
-    ctx.json(gson.toJson(result));
-}
-
-private void joinGame(Context ctx) throws DataAccessException {
-    String authToken = ctx.header("authorization");
-    var request = gson.fromJson(ctx.body(), GameService.JoinGameRequest.class);
-    gameService.joinGame(authToken, request);
-    ctx.status(200);
-    ctx.json("{}");
-}
-
-private void clear(Context ctx) throws DataAccessException {
-    userService.clear();
-    gameService.clear();
-    ctx.status(200);
-    ctx.json("{}");
-}
-
-private void handleException(DataAccessException ex, Context ctx) {
-    String message = ex.getMessage();
-    int status = 500;
-
-    if (message.contains("bad request")) {
-        status = 400;
-    } else if (message.contains("unauthorized")) {
-        status = 401;
-    } else if (message.contains("already taken")) {
-        status = 403;
+        // Convert to JSON and send back to client
+        ctx.status(200);
+        ctx.json(gson.toJson(result));
     }
 
-    ctx.status(status);
-    ctx.json(gson.toJson(Map.of("message", message)));
+    private void logout(Context ctx) throws DataAccessException{
+        String authToken = ctx.header("authorization");
+        userService.logout(authToken);
+        ctx.status(200);
+        ctx.json("{}");
+    }
+
+    private void login(Context ctx) throws DataAccessException{
+        var request = gson.fromJson(ctx.body(), UserService.LoginRequest.class);
+        var result = userService.login(request);
+        ctx.status(200);
+        ctx.json(gson.toJson(result));
+    }
+    private void listGames(Context ctx) throws DataAccessException {
+        String authToken = ctx.header("authorization");
+        var result = gameService.listGames(authToken);
+        ctx.status(200);
+        ctx.json(gson.toJson(result));
+    }
+
+    private void createGame(Context ctx) throws DataAccessException {
+        String authToken = ctx.header("authorization");
+        var request = gson.fromJson(ctx.body(), GameService.CreateGameRequest.class);
+        var result = gameService.createGame(authToken, request);
+        ctx.status(200);
+        ctx.json(gson.toJson(result));
+    }
+
+    private void joinGame(Context ctx) throws DataAccessException {
+        String authToken = ctx.header("authorization");
+        var request = gson.fromJson(ctx.body(), GameService.JoinGameRequest.class);
+        gameService.joinGame(authToken, request);
+        ctx.status(200);
+        ctx.json("{}");
+    }
+
+    private void clear(Context ctx) throws DataAccessException {
+        userService.clear();
+        gameService.clear();
+        ctx.status(200);
+        ctx.json("{}");
+    }
+
+    private void handleException(DataAccessException ex, Context ctx) {
+        String message = ex.getMessage();
+        int status = 500;
+
+        if (message.contains("bad request")) {
+            status = 400;
+        } else if (message.contains("unauthorized")) {
+            status = 401;
+        } else if (message.contains("already taken")) {
+            status = 403;
+        }
+
+        if (status == 500 && !message.toLowerCase(Locale.ROOT).contains("error")) {
+            message = "Error: " + message;
+        }
+
+        ctx.status(status);
+        ctx.json(gson.toJson(Map.of("message", message)));
+    }
 }
-}
-
-
-
-
-
-
-
-
-
