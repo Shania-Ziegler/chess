@@ -61,7 +61,7 @@ public class GameService {
 
         GameData game = gameDAO.getGame(req.gameID());
         if (game == null) {
-            throw new DataAccessException("Error bad request");
+            throw new DataAccessException("Error: bad request");
         }
         //check colors update game
         String color = req.playerColor().toUpperCase();

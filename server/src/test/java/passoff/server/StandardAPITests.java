@@ -39,7 +39,7 @@ public class StandardAPITests {
     }
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws DataAccessException {
         serverFacade.clear();
 
         //one user already logged in

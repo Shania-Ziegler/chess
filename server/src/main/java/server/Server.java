@@ -41,8 +41,17 @@ public class Server {
         javalin.put("/game", this::joinGame);
         javalin.delete("/db", this::clear);
 
-        javalin.exception(DataAccessException.class, this::handleException);
 
+
+        javalin.exception(DataAccessException.class, this::handleException);
+        javalin.exception(Exception.class, this::handleGeneralException);
+
+    }
+    private void handleGeneralException(Exception ex, Context ctx) {
+
+        ctx.status(500);
+
+        ctx.json(Map.of("message", "Error: internal server error"));
     }
 
     public int run(int desiredPort) {
