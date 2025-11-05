@@ -18,7 +18,7 @@ public class SQLUserDAOTest {
     }
 
     private UserData createTestUser(){
-        return new UserData("user","password123","zaps@email.com")
+        return new UserData("user","password123","zaps@email.com");
     }
 
     @Test
