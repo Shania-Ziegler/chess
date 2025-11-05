@@ -6,22 +6,30 @@ import io.javalin.http.*;
 import dataaccess.*; //wild card import
 import service.*;
 import java.util.Map;
+import dataaccess.DataAccessException;
 
 
 public class Server {
 
     private final Javalin javalin;
-    private final UserDAO userDAO = new MemoryUserDAO();
-    private final AuthDAO authDAO = new MemoryAuthDAO();
-    private final GameDAO gameDAO = new MemoryGameDAO();
+    private final UserDAO userDAO;
+    private final AuthDAO authDAO;
+    private final GameDAO gameDAO;
 
-    private final UserService userService = new UserService(userDAO, authDAO);
-    private final GameService gameService = new GameService(gameDAO, authDAO);
+    private final UserService userService;
+    private final GameService gameService;
 
     private final Gson gson = new Gson();
 
 
-    public Server() {
+    public Server() throws DataAccessException {
+        this.userDAO = new SQLUserDAO();
+        this.authDAO = new SQLAuthDAO();
+        this.gameDAO = new SQLGameDAO();
+
+        this.userService = new UserService(userDAO, authDAO);
+        this.gameService = new GameService(gameDAO, authDAO);
+
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
         //register end points
