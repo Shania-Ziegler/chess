@@ -29,7 +29,7 @@ public class SQLGameDAO implements GameDAO {
                 stmt.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new DataAccessException("Unable to configure database: " + e.getMessage());
+            throw new DataAccessException("Error: Database configuration failed." + e.getMessage());
         }
     }
 
@@ -60,7 +60,7 @@ public class SQLGameDAO implements GameDAO {
         } catch (SQLException e) {
             throw new DataAccessException("Error creating game: " + e.getMessage());
         }
-        throw new DataAccessException("Failed to create game");
+        throw new DataAccessException("Error: Failed to create game");
     }
 
     @Override

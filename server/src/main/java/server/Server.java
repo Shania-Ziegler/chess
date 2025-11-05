@@ -51,7 +51,7 @@ public class Server {
 
         ctx.status(500);
 
-        ctx.json(Map.of("message", "Error: internal server error"));
+        ctx.json(Map.of("message", "Error: Internal Server Error"));
     }
 
     public int run(int desiredPort) {

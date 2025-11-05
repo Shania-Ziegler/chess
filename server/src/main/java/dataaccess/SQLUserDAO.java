@@ -23,7 +23,7 @@ public class SQLUserDAO implements UserDAO {
                 stmt.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new DataAccessException("Unable to configure database:" + e.getMessage());
+            throw new DataAccessException("Error:  Database configuration failed." + e.getMessage());
         }
     }
 
@@ -47,9 +47,9 @@ public class SQLUserDAO implements UserDAO {
 
         }catch (SQLException e) {
             if (e.getMessage().contains("Duplicate entry")){
-            throw new DataAccessException("Error already taken");
+            throw new DataAccessException("Error: already taken");
             }
-            throw new DataAccessException("Error creating user: " + e.getMessage());
+            throw new DataAccessException("Error: creating user: " + e.getMessage());
         }
     }
 
@@ -83,21 +83,10 @@ public class SQLUserDAO implements UserDAO {
             try (var stmt = conn.prepareStatement(sql)){
                 stmt.executeUpdate();
             }
-
         } catch (SQLException e) {
-            try {
-                throw new DataAccessException("Error clearing users:" + e.getMessage()) {
-
-
-                };
-            } catch (DataAccessException ex) {
-                throw new RuntimeException(ex);
-            }
-
+            throw new DataAccessException("Error: clearing users: " + e.getMessage());
         }
-
     }
 }
-
 
 
