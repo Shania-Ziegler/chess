@@ -15,7 +15,7 @@ public class SQLUserDAO implements UserDAO {
         try (var conn = DatabaseManager.getConnection()) {
             var createTableSQL =
                     """
-                            CREATE TABLE IF NOT EXISTS USERS (
+                            CREATE TABLE IF NOT EXISTS users (
                             username VARCHAR(255) NOT NULL PRIMARY KEY,
                             password VARCHAR(255) NOT NULL,
                             email VARCHAR(255) NOT NULL )""";
