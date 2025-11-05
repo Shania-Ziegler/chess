@@ -6,32 +6,39 @@ import model.UserData;
 import model.AuthData;
 import java.util.UUID;
 
-public class UserService{
+public class UserService {
     private final UserDAO userDAO;
     private final AuthDAO authDAO;
 
-public UserService (UserDAO userDAO, AuthDAO authDAO) {
-    this.userDAO = userDAO;
-    this.authDAO = authDAO;
+    public UserService(UserDAO userDAO, AuthDAO authDAO) {
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
 
-}
+    }
 
-public UserService() throws DataAccessException {
-    this.userDAO = new SQLUserDAO();
-    this.authDAO = new SQLAuthDAO();
-}
+    public UserService() throws DataAccessException {
+        this.userDAO = new SQLUserDAO();
+        this.authDAO = new SQLAuthDAO();
+    }
 
 
-    public record RegisterRequest(String username, String password, String email){}
-    public record RegisterResult(String username, String authToken){}
-    public record LoginRequest(String username, String password){}
-    public record LoginResult(String username, String authToken){}
+    public record RegisterRequest(String username, String password, String email) {
+    }
+
+    public record RegisterResult(String username, String authToken) {
+    }
+
+    public record LoginRequest(String username, String password) {
+    }
+
+    public record LoginResult(String username, String authToken) {
+    }
 
     public RegisterResult register(RegisterRequest req) throws DataAccessException {
         if (req.username() == null || req.password() == null || req.email() == null) {
             throw new DataAccessException("Error: bad request");
         }
-        UserData user = new UserData(req.username(),req.password(),req.email());
+        UserData user = new UserData(req.username(), req.password(), req.email());
         userDAO.createUser(user);
 
         //gen auth token
@@ -40,7 +47,7 @@ public UserService() throws DataAccessException {
         AuthData auth = new AuthData(authToken, req.username());
         authDAO.createAuth(auth);
 
-        return new RegisterResult(req.username(),authToken);
+        return new RegisterResult(req.username(), authToken);
     }
 
 
@@ -51,7 +58,7 @@ public UserService() throws DataAccessException {
         //get userfrom database then verify user + password
         UserData user = userDAO.getUser(req.username());
 
-        if(user == null || !BCrypt.checkpw(req.password(), user.password())){
+        if (user == null || !BCrypt.checkpw(req.password(), user.password())) {
             throw new DataAccessException("Error: unauthorized");
         }
 
@@ -64,9 +71,12 @@ public UserService() throws DataAccessException {
     }
 
     public void logout(String authToken) throws DataAccessException {
-        authDAO.deleteAuth(authToken);
+    AuthData auth = authDAO.getAuth(authToken);
+    if (auth == null){
+        throw new DataAccessException("Error: Unauthorized");
     }
-
+    authDAO.deleteAuth(authToken);
+    }
     public void clear() throws DataAccessException{
         userDAO.clear();
         authDAO.clear();
