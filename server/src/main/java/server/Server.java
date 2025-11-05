@@ -22,8 +22,7 @@ public class Server {
     private final Gson gson = new Gson();
 
 
-    public Server() {
-        try {
+    public Server() throws DataAccessException {
             this.userDAO = new SQLUserDAO();
             this.authDAO = new SQLAuthDAO();
             this.gameDAO = new SQLGameDAO();
@@ -44,11 +43,6 @@ public class Server {
 
             javalin.exception(DataAccessException.class, this::handleException);
             javalin.exception(Exception.class, this::handleGeneralException);
-
-        } catch (DataAccessException e) {
-            // Wrap the checked exception as a RuntimeException
-            throw new RuntimeException("Failed to initialize server", e);
-        }
     }
 
     private void handleGeneralException(Exception ex, Context ctx) {

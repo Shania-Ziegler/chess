@@ -13,7 +13,9 @@ public class DataAccessException extends Exception {
     }
 
     private static String formatMessage(String message) {
-        if (message == null) return "Error: unspecified database failure";
+        if (message == null) {
+            return "Error: unspecified database failure";
+        }
         if (!message.toLowerCase().contains("error")) {
             return "Error: " + message;
         }
