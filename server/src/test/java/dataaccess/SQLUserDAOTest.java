@@ -24,7 +24,7 @@ public class SQLUserDAOTest {
     @Test
     @DisplayName("Create User : Positive")
     public void createUserPositive() throws DataAccessException {
-        UserData user = new UserData("user", "password123", "zaps@email.com");
+        UserData user = createTestUser();
         userDAO.createUser(user);
 
         UserData retrieved = userDAO.getUser("user");
@@ -36,7 +36,7 @@ public class SQLUserDAOTest {
     @Test
     @DisplayName("Create User : Negative (Duplicate)")
     public void createUserNegative() throws DataAccessException {
-        UserData user = new UserData("user", "password123", "zaps@email.com");
+        UserData user = createTestUser();
         userDAO.createUser(user);
 
         assertThrows(DataAccessException.class, () -> {userDAO.createUser(user);});
@@ -45,7 +45,7 @@ public class SQLUserDAOTest {
     @Test
     @DisplayName("Get User - Positive")
     public void getUserPositive() throws DataAccessException {
-        UserData user = new UserData("user", "password123", "zaps@email.com");
+        UserData user = createTestUser();
         userDAO.createUser(user);
 
         UserData retrieved = userDAO.getUser("user");
