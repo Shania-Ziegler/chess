@@ -1,5 +1,5 @@
 package dataaccess;
-
+import java.util.Locale;
 import model.UserData;
 import java.sql.SQLException;
 import org.mindrot.jbcrypt.BCrypt;
