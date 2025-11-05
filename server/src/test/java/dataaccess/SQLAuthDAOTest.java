@@ -4,8 +4,12 @@ import model.AuthData;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+
 public class SQLAuthDAOTest {
     private static SQLAuthDAO authDAO;
+
+    private static final String TEST_TOKEN = "token123";
+    private static final String TEST_USER = "tester";
 
     @BeforeAll
     public static void init() throws DataAccessException {
@@ -17,16 +21,22 @@ public class SQLAuthDAOTest {
         authDAO.clear();
     }
 
+    private AuthData createverifytestAuth() throws DataAccessException{
+        AuthData auth = new AuthData(TEST_TOKEN, TEST_USER);
+        authDAO.createAuth(auth);
+
+        AuthData retrieved = authDAO.getAuth(TEST_TOKEN);
+        assertNotNull(retrieved);
+        assertEquals(TEST_TOKEN, retrieved.authToken());
+        assertEquals(TEST_USER, retrieved.username());
+
+        return retrieved;
+    }
+
     @Test
     @DisplayName("Create Auth - Positive")
     public void createAuthPositive() throws DataAccessException {
-        AuthData auth = new AuthData("token123", "tester");
-        authDAO.createAuth(auth);
-
-        AuthData retrieved = authDAO.getAuth("token123");
-        assertNotNull(retrieved);
-        assertEquals("token123", retrieved.authToken());
-        assertEquals("tester", retrieved.username());
+        createverifytestAuth();
     }
 
     @Test
