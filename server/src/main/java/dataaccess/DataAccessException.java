@@ -18,5 +18,5 @@ public class DataAccessException extends Exception {
             return "Error: " + message;
         }
         return message;
-    }
+    }//add test
 }
