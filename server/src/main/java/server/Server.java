@@ -6,8 +6,6 @@ import io.javalin.http.*;
 import dataaccess.*;
 import service.*;
 import java.util.Map;
-import dataaccess.DataAccessException;
-import java.util.Locale;
 
 public class Server {
 
@@ -21,38 +19,30 @@ public class Server {
 
     private final Gson gson = new Gson();
 
+    public Server() {
+        try {
+            this.userDAO = new SQLUserDAO();
+            this.authDAO = new SQLAuthDAO();
+            this.gameDAO = new SQLGameDAO();
 
-    public Server() throws DataAccessException {
-
-
-        this.userDAO = new SQLUserDAO();
-        this.authDAO = new SQLAuthDAO();
-        this.gameDAO = new SQLGameDAO();
-
-        this.userService = new UserService(userDAO, authDAO);
-        this.gameService = new GameService(gameDAO, authDAO);
+            this.userService = new UserService(userDAO, authDAO);
+            this.gameService = new GameService(gameDAO, authDAO);
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Failed to initialize database: " + e.getMessage(), e);
+        }
 
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
-        // Register end points
-        javalin.post("/user",this::register);
+        //register end points
+        javalin.post("/user", this::register);
         javalin.post("/session", this::login);
         javalin.delete("/session", this::logout);
         javalin.get("/game", this::listGames);
-        javalin.post("/game",this::createGame);
+        javalin.post("/game", this::createGame);
         javalin.put("/game", this::joinGame);
         javalin.delete("/db", this::clear);
 
-
         javalin.exception(DataAccessException.class, this::handleException);
-        javalin.exception(Exception.class, this::handleGeneralException);
-
-    }
-    private void handleGeneralException(Exception ex, Context ctx) {
-
-        ctx.status(500);
-
-        ctx.json(Map.of("message", "Error: Internal Server Error"));
     }
 
     public int run(int desiredPort) {
@@ -64,29 +54,27 @@ public class Server {
         javalin.stop();
     }
 
-
     private void register(Context ctx) throws DataAccessException {
         var request = gson.fromJson(ctx.body(), UserService.RegisterRequest.class);
         var result = userService.register(request);
-
-        // Convert to JSON and send back to client
         ctx.status(200);
         ctx.json(gson.toJson(result));
     }
 
-    private void logout(Context ctx) throws DataAccessException{
+    private void logout(Context ctx) throws DataAccessException {
         String authToken = ctx.header("authorization");
         userService.logout(authToken);
         ctx.status(200);
         ctx.json("{}");
     }
 
-    private void login(Context ctx) throws DataAccessException{
+    private void login(Context ctx) throws DataAccessException {
         var request = gson.fromJson(ctx.body(), UserService.LoginRequest.class);
         var result = userService.login(request);
         ctx.status(200);
         ctx.json(gson.toJson(result));
     }
+
     private void listGames(Context ctx) throws DataAccessException {
         String authToken = ctx.header("authorization");
         var result = gameService.listGames(authToken);
@@ -127,10 +115,6 @@ public class Server {
             status = 401;
         } else if (message.contains("already taken")) {
             status = 403;
-        }
-
-        if (status == 500 && !message.toLowerCase(Locale.ROOT).contains("error")) {
-            message = "Error: " + message;
         }
 
         ctx.status(status);

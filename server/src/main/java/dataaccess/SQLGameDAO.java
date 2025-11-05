@@ -17,7 +17,7 @@ public class SQLGameDAO implements GameDAO {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
             var createTableSQL = """
-                CREATE TABLE IF NOT EXISTS games (
+                CREATE TABLE IF NOT EXISTS GAMES (
                     gameID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     whiteUsername VARCHAR(255),
                     blackUsername VARCHAR(255),
