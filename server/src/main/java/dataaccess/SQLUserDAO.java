@@ -47,7 +47,7 @@ public class SQLUserDAO implements UserDAO {
 
         }catch (SQLException e) {
             if (e.getMessage().contains("Duplicate entry")){
-
+            throw new DataAccessException("Error already taken");
             }
             throw new DataAccessException("Error creating user: " + e.getMessage());
         }
