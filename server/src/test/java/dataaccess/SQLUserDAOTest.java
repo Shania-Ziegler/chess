@@ -26,7 +26,7 @@ public class SQLUserDAOTest {
         UserData retrieved = userDAO.getUser("user");
         assertNotNull(retrieved);
         assertEquals("user", retrieved.username());
-        assertEquals("test@email.com", retrieved.email());
+        assertEquals("zaps@email.com", retrieved.email());
     }
 
     @Test
