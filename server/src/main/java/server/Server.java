@@ -22,31 +22,35 @@ public class Server {
     private final Gson gson = new Gson();
 
 
-    public Server() throws DataAccessException {
-        this.userDAO = new SQLUserDAO();
-        this.authDAO = new SQLAuthDAO();
-        this.gameDAO = new SQLGameDAO();
+    public Server() {
+        try {
+            this.userDAO = new SQLUserDAO();
+            this.authDAO = new SQLAuthDAO();
+            this.gameDAO = new SQLGameDAO();
 
-        this.userService = new UserService(userDAO, authDAO);
-        this.gameService = new GameService(gameDAO, authDAO);
+            this.userService = new UserService(userDAO, authDAO);
+            this.gameService = new GameService(gameDAO, authDAO);
 
-        javalin = Javalin.create(config -> config.staticFiles.add("web"));
+            javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
-        //register end points
-        javalin.post("/user",this::register);
-        javalin.post("/session", this::login);
-        javalin.delete("/session", this::logout);
-        javalin.get("/game", this::listGames);
-        javalin.post("/game",this::createGame);
-        javalin.put("/game", this::joinGame);
-        javalin.delete("/db", this::clear);
+            // register end points
+            javalin.post("/user", this::register);
+            javalin.post("/session", this::login);
+            javalin.delete("/session", this::logout);
+            javalin.get("/game", this::listGames);
+            javalin.post("/game", this::createGame);
+            javalin.put("/game", this::joinGame);
+            javalin.delete("/db", this::clear);
 
+            javalin.exception(DataAccessException.class, this::handleException);
+            javalin.exception(Exception.class, this::handleGeneralException);
 
-
-        javalin.exception(DataAccessException.class, this::handleException);
-        javalin.exception(Exception.class, this::handleGeneralException);
-
+        } catch (DataAccessException e) {
+            // Wrap the checked exception as a RuntimeException
+            throw new RuntimeException("Failed to initialize server", e);
+        }
     }
+
     private void handleGeneralException(Exception ex, Context ctx) {
 
         ctx.status(500);
