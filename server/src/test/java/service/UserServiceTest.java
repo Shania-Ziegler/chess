@@ -14,13 +14,14 @@ public class UserServiceTest {
     private UserService userService;
 
 
-    //run method before each @Test
     @BeforeEach
     public void setup() throws DataAccessException {
         userDAO = new SQLUserDAO();
         authDAO = new SQLAuthDAO();
 
         userService = new UserService(userDAO, authDAO);
+
+        userService.clear();
     }
 
     @Test
@@ -45,11 +46,10 @@ public class UserServiceTest {
 
         var req2 = new UserService.RegisterRequest("zap","pas123","ziggles@mail.com");
 
-
-        //check if code throws expected exception with () ->
         var exception = assertThrows(DataAccessException.class,() -> userService.register(req2));
 
-        assertFalse(exception.getMessage().contains("Username already exists"));
+        assertTrue(exception.getMessage().contains("already taken"),
+                "Exception message must contain 'already taken' for a duplicate user.");
     }
 
     @Test
