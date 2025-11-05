@@ -21,6 +21,12 @@ public class SQLUserDAOTest {
         return new UserData("user","password123","zaps@email.com");
     }
 
+    private void assertUserMatches(UserData retrieved) {
+        assertNotNull(retrieved);
+        assertEquals("user", retrieved.username());
+        assertEquals("zaps@email.com", retrieved.email());
+    }
+
     @Test
     @DisplayName("Create User : Positive")
     public void createUserPositive() throws DataAccessException {
@@ -28,9 +34,8 @@ public class SQLUserDAOTest {
         userDAO.createUser(user);
 
         UserData retrieved = userDAO.getUser("user");
-        assertNotNull(retrieved);
-        assertEquals("user", retrieved.username());
-        assertEquals("zaps@email.com", retrieved.email());
+        // CHANGED: Use helper method instead of duplicate assertions
+        assertUserMatches(retrieved);
     }
 
     @Test
@@ -49,9 +54,7 @@ public class SQLUserDAOTest {
         userDAO.createUser(user);
 
         UserData retrieved = userDAO.getUser("user");
-        assertNotNull(retrieved);
-        assertEquals("user", retrieved.username());
-        assertEquals("zaps@email.com", retrieved.email());
+        assertUserMatches(retrieved);
     }
 
     @Test
