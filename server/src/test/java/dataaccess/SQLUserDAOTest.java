@@ -17,6 +17,10 @@ public class SQLUserDAOTest {
         userDAO.clear();
     }
 
+    private UserData createTestUser(){
+        return new UserData("user","password123","zaps@email.com")
+    }
+
     @Test
     @DisplayName("Create User : Positive")
     public void createUserPositive() throws DataAccessException {
