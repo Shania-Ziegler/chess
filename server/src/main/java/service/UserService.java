@@ -1,8 +1,7 @@
 package service;
 
-import dataaccess.UserDAO;
-import dataaccess.AuthDAO;
-import dataaccess.DataAccessException;
+import dataaccess.*;
+import org.mindrot.jbcrypt.BCrypt;
 import model.UserData;
 import model.AuthData;
 import java.util.UUID;
@@ -15,6 +14,11 @@ public UserService (UserDAO userDAO, AuthDAO authDAO) {
     this.userDAO = userDAO;
     this.authDAO = authDAO;
 
+}
+
+public UserService() throws DataAccessException {
+    this.userDAO = new SQLUserDAO();
+    this.authDAO = new SQLAuthDAO();
 }
 
 
@@ -47,7 +51,7 @@ public UserService (UserDAO userDAO, AuthDAO authDAO) {
         //get userfrom database then verify user + password
         UserData user = userDAO.getUser(req.username());
 
-        if(user == null || !user.password().equals(req.password())){
+        if(user == null || !BCrypt.checkpw(req.password(), user.password())){
             throw new DataAccessException("Error: unauthorized");
         }
 

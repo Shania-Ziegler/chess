@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DatabaseTests {
 
-    private static final TestUser TEST_USER = new TestUser("ExistingUser", "existingUserPassword", "eu@mail.com");
+    public static final TestUser TEST_USER = new TestUser("ExistingUser", "existingUserPassword", "eu@mail.com");
 
     private static TestServerFacade serverFacade;
 

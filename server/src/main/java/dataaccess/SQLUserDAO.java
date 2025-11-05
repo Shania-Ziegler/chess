@@ -12,7 +12,7 @@ public class SQLUserDAO implements UserDAO {
 
     private void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) { //conn is connection object
+        try (var conn = DatabaseManager.getConnection()) {
             var createTableSQL =
                     """
                             CREATE TABLE IF NOT EXISTS users (
@@ -34,7 +34,7 @@ public class SQLUserDAO implements UserDAO {
         var sql = "INSERT INTO users(username, password, email) VALUES (?, ?, ?)";
         try (var conn = DatabaseManager.getConnection()) {
             try (var stmt = conn.prepareStatement(sql)) {
-                //hash pass before store
+
                 String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
 
                 stmt.setString(1, user.username());
@@ -77,8 +77,11 @@ public class SQLUserDAO implements UserDAO {
     public void clear() throws DataAccessException {
         var sql = "DELETE FROM users";
         try (var conn = DatabaseManager.getConnection()) {
+            try (var stmt = conn.prepareStatement(sql)){
+                stmt.executeUpdate();
+            }
 
-        } catch (SQLException | DataAccessException e) {
+        } catch (SQLException e) {
             try {
                 throw new DataAccessException("Error clearing users:" + e.getMessage()) {
 
