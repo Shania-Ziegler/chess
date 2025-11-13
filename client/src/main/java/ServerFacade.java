@@ -35,4 +35,26 @@ public class ServerFacade {
         var request = new LoginRequest(username, password);
         return makeRequest("POST", path, request, AuthData.class);
     }
+    public void logout(String authToken) throws Exception {
+        var path = "/session";
+        makeRequest("DELETE", path, null, null, authToken);
+    }
+    public CreateGameResult createGame(String authToken, String gameName) throws Exception {
+        var path = "/game";
+        record CreateGameRequest(String gameName) {}
+        var request = new CreateGameRequest(gameName);
+        return makeRequest("POST", path, request, CreateGameResult.class, authToken);
+    }
+    public ListGamesResult listGames(String authToken) throws Exception {
+        var path = "/game";
+        return makeRequest("GET", path, null, ListGamesResult.class, authToken);
+    }
+
+    public void joinGame(String authToken, String playerColor, int gameID) throws Exception {
+        var path = "/game";
+        record JoinGameRequest(String playerColor, int gameID) {}
+        var request = new JoinGameRequest(playerColor, gameID);
+        makeRequest("PUT", path, request, null, authToken);
+    }
+
 }
