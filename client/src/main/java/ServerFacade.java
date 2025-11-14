@@ -56,5 +56,14 @@ public class ServerFacade {
         var request = new JoinGameRequest(playerColor, gameID);
         makeRequest("PUT", path, request, null, authToken);
     }
+    private<T> T makeRequest(String method,String path, Object request, Class<T> responseClass) throws Exception {
+        try {
+            URL url = new URL(serverUrl + path);
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setRequestMethod(method);
+            http.setDoOutput(true);
+        }
+    }
+
 
 }
