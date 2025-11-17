@@ -119,7 +119,7 @@ public class PostloginUI {
         try {
             gameNumber = Integer.parseInt(params[0]);
         } catch (NumberFormatException e) {
-            return "Game number must be a number\n";
+            return "Game number must be a number hint: check list for number\n";
         }
 
 
@@ -127,8 +127,28 @@ public class PostloginUI {
             return "Invalid game number. Use 'list' first.\n";
         }
 
-
+        String colorStr = params[1].toUpperCase();
+        ChessGame.TeamColor color;
+        try {
+            color = ChessGame.TeamColor.valueOf(colorStr);
+        }catch(IllegalArgumentException e){
+            return "ONLY WHITE OR BLACK CHESS PEICES";
+        }
         GameData game = gamesResult.games()[gameNumber - 1];
+
+        try {
+            serverFacade.joinGame(authData.authToken(), colorStr, game.gameID());
+        } catch (Exception e) {
+            // Check if it's a 403 error (already taken)
+            if (e.getMessage().contains("403")) {
+                return String.format("Error: The %s position in '%s' is already taken.\n",
+                        colorStr, game.gameName());
+            }
+            throw e; // Re-throw other errors
+        }
+
+
+        game = gamesResult.games()[gameNumber - 1];
 
 
         serverFacade.joinGame(authData.authToken(), null, game.gameID());
