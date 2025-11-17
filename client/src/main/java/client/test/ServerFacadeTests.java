@@ -1,4 +1,4 @@
-package client;
+package client.test;
 
 import client.ServerFacade;
 import org.junit.jupiter.api.*;
