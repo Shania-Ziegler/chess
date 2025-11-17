@@ -1,3 +1,5 @@
+
+
 package client;
 
 import com.google.gson.Gson;
@@ -18,7 +20,7 @@ public class ServerFacade {
         this.serverUrl = "http://localhost:" + port;
     }
 
-    // For testing - clear database
+
     public void clearDatabase() throws Exception {
         makeRequest("DELETE", "/db", null, null);
     }
@@ -61,7 +63,7 @@ public class ServerFacade {
         makeRequest("PUT", path, request, null, authToken);
     }
 
-    // Helper method - calls main method with null authToken
+    // Helper method for requests without auth token
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws Exception {
         return makeRequest(method, path, request, responseClass, null);
     }
@@ -79,7 +81,7 @@ public class ServerFacade {
                 http.addRequestProperty("authorization", authToken);
             }
 
-            // Write request body if present
+            // Write request body 
             if (request != null) {
                 http.addRequestProperty("Content-Type", "application/json");
                 String reqData = gson.toJson(request);
@@ -91,7 +93,7 @@ public class ServerFacade {
             http.connect();
             throwIfNotSuccessful(http);
 
-            // Read response body if expected
+            // Read response body
             if (responseClass != null) {
                 return readBody(http, responseClass);
             }
@@ -110,17 +112,29 @@ public class ServerFacade {
     }
 
     private <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
-        T response = null;
-        if (http.getContentLength() < 0) {
-            try (InputStream respBody = http.getInputStream()) {
-                InputStreamReader reader = new InputStreamReader(respBody);
-                response = gson.fromJson(reader, responseClass);
-            }
+        try (InputStream respBody = http.getInputStream()) {
+            InputStreamReader reader = new InputStreamReader(respBody);
+            return gson.fromJson(reader, responseClass);
         }
-        return response;
     }
 
     // Result record classes
     public record CreateGameResult(int gameID) {}
     public record ListGamesResult(GameData[] games) {}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
