@@ -1,7 +1,5 @@
 package client;
 
-import ui.Repl;
-
 public class Main {
     public static void main(String[] args) {
         String serverUrl = "http://localhost:8080";
