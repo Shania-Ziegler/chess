@@ -1,3 +1,5 @@
+package client;
+
 import client.ServerFacade;
 import org.junit.jupiter.api.*;
 import server.Server;
