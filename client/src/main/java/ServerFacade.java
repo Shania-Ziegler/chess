@@ -61,10 +61,8 @@ public class ServerFacade {
             URL url = new URL(serverUrl + path);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
-            http.setDoOutput(true);
+            http.setDoOutput(true);[ppp]
         }
-
-        fjrtoi
     }
 
 
