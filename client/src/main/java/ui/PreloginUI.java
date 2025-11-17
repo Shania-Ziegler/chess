@@ -19,7 +19,7 @@ public class PreloginUI {
                 case "login" -> login(params, repl);
                 case "quit" -> quit(repl);
                 case "help" -> help();
-                default -> help();
+                default -> "Unknown command type help for list of commands";
             };
         } catch (Exception e) {
             return e.getMessage();
@@ -28,7 +28,7 @@ public class PreloginUI {
 
     private String register(String[] params, Repl repl) throws Exception {
         if (params.length != 3) {
-            return "Error: Expected: register <username> <password> <email>";
+            return "Error - Expected: register <username> <password> <email>";
         }
         String username = params[0];
         String password = params[1];
@@ -60,9 +60,9 @@ public class PreloginUI {
         return """
                 Available commands:
                   register <username> <password> <email> - Create a new account
-                  login <username> <password> - Login to your account
+                  login <username> <password> - Login to account
                   quit - Exit the program
-                  help - Display this help message
+                  help
                 """;
     }
 }

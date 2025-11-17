@@ -11,6 +11,9 @@ public class Repl {
     private State state = State.LOGGED_OUT;
     private AuthData authData;
 
+    private PreloginUI preloginUI;
+    private PostloginUI postloginUI;
+
     private enum State {
         LOGGED_OUT,
         LOGGED_IN,
@@ -19,10 +22,11 @@ public class Repl {
 
     public Repl(String serverUrl) {
         this.serverFacade = new ServerFacade(serverUrl);
+        this.preloginUI = new PreloginUI(serverFacade);
     }
 
     public void run() {
-        System.out.println("Welcome to Chess! Type 'help' for commands.");
+        System.out.println("Welcome to Chess 240 ♔: Type 'help' for commands.");
 
         Scanner scanner = new Scanner(System.in);
         String result = "";
@@ -39,7 +43,7 @@ public class Repl {
             }
             System.out.print(RESET_TEXT_COLOR);
         }
-        System.out.println("Goodbye!");
+        System.out.println("End");
     }
 
     private void printPrompt() {
@@ -60,9 +64,9 @@ public class Repl {
             System.arraycopy(tokens, 1, params, 0, params.length);
 
             if (state == State.LOGGED_OUT) {
-                return new PreloginUI(serverFacade).eval(cmd, params, this);
+                return preloginUI.eval(cmd, params, this);
             } else {
-                return new PostloginUI(serverFacade, authData).eval(cmd, params, this);
+                return postloginUI.eval(cmd, params, this);
             }
         } catch (Exception ex) {
             return "Error: " + ex.getMessage();
@@ -73,11 +77,14 @@ public class Repl {
     public void setAuthData(AuthData authData) {
         this.authData = authData;
         this.state = State.LOGGED_IN;
+        // Create postloginUI when logging in
+        this.postloginUI = new PostloginUI(serverFacade, authData);
     }
 
     public void logout() {
         this.authData = null;
         this.state = State.LOGGED_OUT;
+        this.postloginUI = null; // Clear the UI
     }
 
     public void quit() {
