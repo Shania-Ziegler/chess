@@ -1,6 +1,6 @@
 package dataaccess;
 
-import chess.ChessGame;
+import java.chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 import java.sql.SQLException;

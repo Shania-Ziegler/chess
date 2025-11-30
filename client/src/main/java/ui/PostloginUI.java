@@ -1,6 +1,6 @@
 package ui;
 
-import chess.ChessGame;
+import java.chess.ChessGame;
 import client.Repl;
 import client.ServerFacade;
 import model.AuthData;

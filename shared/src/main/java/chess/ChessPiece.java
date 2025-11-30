@@ -1,4 +1,5 @@
 package chess;
+import java.chess.ChessGame;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

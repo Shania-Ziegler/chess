@@ -1,5 +1,6 @@
 package ui;
 
+import java.chess.ChessGame;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import chess.*;
