@@ -1,4 +1,4 @@
-package java.websocket;
+package java.websocket.commands;
 
 public class MakeMoveCommand {
 }
