@@ -18,6 +18,11 @@ public void add(Integer gameID,String authToken, Session session){
     var conn = new Connection(authToken, Session);
     connections.com(gameID k -> new ArrayList<>()).add(conn);
 }
-
+public void remove(Integer gameID, Session session){
+    var list = connections.get(gameID);
+    if(list != null){
+        list.removeIf(conn -> conn.session.equals(session));
+    }
+}
     //tracks active websocket connections
 }
