@@ -12,7 +12,10 @@ import java.util.ArrayList;
 public class ChessGame {
     private ChessBoard board;
     private TeamColor currentTurn;
-
+    private boolean gameOver = false;
+    private TeamColor getOpponentColor(TeamColor teamColor){
+        return (teamColor == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
+    }
     public ChessGame() {
         board = new ChessBoard();
         board.resetBoard();
@@ -323,9 +326,15 @@ public class ChessGame {
         return moves != null && !moves.isEmpty();
     }
 
-    private TeamColor getOpponentColor(TeamColor teamColor) {
-        return (teamColor == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
+    public boolean isGameOver() {
+        return gameOver;
     }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+
+
 
     @Override
     public boolean equals(Object o) {
@@ -336,11 +345,11 @@ public class ChessGame {
             return false;
         }
         ChessGame game = (ChessGame) o;
-        return Objects.equals(board, game.board) && currentTurn == game.currentTurn;
+        return gameOver == game.gameOver && Objects.equals(board, game.board) && currentTurn == game.currentTurn;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(board, currentTurn);
+        return Objects.hash(board, currentTurn,gameOver);
     }
 }
