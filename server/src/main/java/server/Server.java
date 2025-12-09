@@ -5,6 +5,7 @@ import io.javalin.*;
 import io.javalin.http.*;
 import dataaccess.*;
 import service.*;
+import server.websocket.WebSocketHandler;
 import java.util.Map;
 
 public class Server {
@@ -16,6 +17,7 @@ public class Server {
 
     private final UserService userService;
     private final GameService gameService;
+    private final WebSocketHandler webSocketHandler;
 
     private final Gson gson = new Gson();
 
@@ -27,13 +29,21 @@ public class Server {
 
             this.userService = new UserService(userDAO, authDAO);
             this.gameService = new GameService(gameDAO, authDAO);
+            this.webSocketHandler = new WebSocketHandler(authDAO, gameDAO);
         } catch (DataAccessException e) {
             throw new RuntimeException("Failed to initialize database: " + e.getMessage(), e);
         }
 
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
-        //register end points
+        // Register WebSocket endpoint
+        javalin.ws("/ws", ws -> {
+            ws.onConnect(webSocketHandler::onConnect);
+            ws.onMessage(webSocketHandler::onMessage);
+            ws.onClose(ctx -> System.out.println("WebSocket closed"));
+        });
+
+        // Register HTTP endpoints
         javalin.post("/user", this::register);
         javalin.post("/session", this::login);
         javalin.delete("/session", this::logout);
