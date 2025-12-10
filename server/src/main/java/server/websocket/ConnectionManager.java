@@ -49,7 +49,11 @@ public class ConnectionManager {
         }
 
         public void send(String msg) {
-            session.send(msg);
+            try {
+                session.send(msg);
+            } catch (Exception e) {
+                System.out.println("Failed to send to closed connection: " + e.getMessage());
+            }
         }
     }
 }
