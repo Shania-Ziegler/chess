@@ -32,4 +32,12 @@ public class GameplayUI implements NotificationHandler {
 
         ws.connect(authToken, gameID);
     }
+    @Override
+    public void notify(ServerMessage message){
+        switch (message.getServerMessageType()){
+            case LOAD_GAME -> handleLoadGame((LoadGameMessage) message);
+            case ERROR -> handleError((ErrorMessage) message);
+            case NOTIFICATION -> handleNotification((NotificationMessage) message);
+        }
+    }
 }
