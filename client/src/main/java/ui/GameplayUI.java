@@ -43,12 +43,14 @@ public class GameplayUI implements NotificationHandler {
             case NOTIFICATION -> handleNotification((NotificationMessage) message);
         }
     }
-    private void handleLoadGame(LoadGameMessage msg){
+
+    private void handleLoadGame(LoadGameMessage msg) {
         this.currentGame = msg.getGame();
         System.out.println();
         drawBoard();
         System.out.print("\n>>>");
     }
+
     private void handleError(ErrorMessage msg) {
         System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "\n" + msg.getErrorMessage() + EscapeSequences.RESET_TEXT_COLOR);
         System.out.print(">>> ");
@@ -58,6 +60,7 @@ public class GameplayUI implements NotificationHandler {
         System.out.println(EscapeSequences.SET_TEXT_COLOR_BLUE + "\n" + msg.getMessage() + EscapeSequences.RESET_TEXT_COLOR);
         System.out.print(">>> ");
     }
+
     public void run() {
         System.out.println("Entering gameplay. Type 'help' for commands.");
 
@@ -108,4 +111,13 @@ public class GameplayUI implements NotificationHandler {
         }
     }
 
+    private void displayHelp(){
+        System.out.println("Available commands:");
+        System.out.println("  help - Display this help message next time you're stuck");
+        System.out.println("  redraw - Redraw the chess board");
+        System.out.println("  leave - Leave the game");
+        System.out.println("  Make move start + end (move e2 e4 ect)");
+        System.out.println("  resign - Forfeit the game");
+        System.out.println(" Show position legal moves for a piece ( example: show e2)");
+    }
 }
