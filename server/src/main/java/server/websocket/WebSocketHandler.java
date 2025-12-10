@@ -40,12 +40,18 @@ public class WebSocketHandler {
 
             switch (command.getCommandType()) {
                 case CONNECT -> handleConnect(ctx, command, message);
-                case MAKE_MOVE -> handleMakeMove(ctx, command, message);  // Pass message
+                case MAKE_MOVE -> handleMakeMove(ctx, command, message);
                 case LEAVE -> handleLeave(ctx, command);
                 case RESIGN -> handleResign(ctx, command);
             }
         } catch (Exception e) {
-            sendError(ctx, "Error: " + e.getMessage());
+            System.err.println("Error processing message: " + e.getMessage());
+            e.printStackTrace();
+            try {
+                sendError(ctx, "Error: " + e.getMessage());
+            } catch (Exception ignored) {
+
+            }
         }
     }
 
