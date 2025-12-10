@@ -28,7 +28,7 @@ public class ConnectionManager {
         var list = connections.get(gameID);
         if (list != null) {
             for (var conn : list) {
-                if (!conn.session.equals(excludeSession)) {
+                if (excludeSession == null || !conn.session.equals(excludeSession)) {
                     conn.send(gson.toJson(message));
                 }
             }
