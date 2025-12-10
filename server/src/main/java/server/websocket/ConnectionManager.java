@@ -40,6 +40,12 @@ public class ConnectionManager {
         }
     }
 
+    public void removeSession(WsContext session) {
+        for (var gameConnections : connections.values()) {
+            gameConnections.removeIf(conn -> conn.session.equals(session));
+        }
+    }
+
     public void sendToSession(WsContext session, ServerMessage message) {
         session.send(gson.toJson(message));
     }

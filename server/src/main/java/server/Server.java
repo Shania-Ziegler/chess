@@ -40,7 +40,15 @@ public class Server {
         javalin.ws("/ws", ws -> {
             ws.onConnect(webSocketHandler::onConnect);
             ws.onMessage(webSocketHandler::onMessage);
-            ws.onClose(ctx -> System.out.println("WebSocket closed"));
+            ws.onClose(ctx -> {
+                System.out.println("WebSocket connection closed");
+            });
+            ws.onError(ctx -> {
+                System.out.println("WebSocket error: " + ctx.error());
+                if (ctx.error() != null) {
+                    ctx.error().printStackTrace();
+                }
+            });
         });
 
         // Register HTTP endpoints

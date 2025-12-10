@@ -26,6 +26,10 @@ public class WebSocketHandler {
     public void onConnect(WsConnectContext ctx) {
         System.out.println("WebSocket connected: ");
     }
+    public void onClose(io.javalin.websocket.WsCloseContext ctx) {
+        connections.removeSession(ctx);
+        System.out.println("Connection removed from all games");
+    }
 
     public void onMessage(WsMessageContext ctx) {
         try {
