@@ -73,7 +73,7 @@ public class PostloginUI {
 
     private String playGame(String[] params) throws Exception {
         if (params.length != 2) {
-            return "Expected: play <game_number> <WHITE|BLACK>\n";
+            return "Expected: play <game_number> Ennter WHITE or BLACK\n";
         }
 
         int gameNumber;
@@ -96,15 +96,32 @@ public class PostloginUI {
         }
 
         GameData game = gamesResult.games()[gameNumber - 1];
+        String currentUsername = authData.username();
 
-        // Join game via HTTP first
-        serverFacade.joinGame(authData.authToken(), colorStr, game.gameID());
+        // Check if user is already in this game
+        boolean alreadyWhite = currentUsername.equals(game.whiteUsername());
+        boolean alreadyBlack = currentUsername.equals(game.blackUsername());
 
+        if (alreadyWhite || alreadyBlack) {
+            // User is already in the game - just reconnect via WebSocket
+            System.out.println("Reconnecting to your game...");
+        } else {
+            // Not in the game yet - join via HTTP
+            try {
+                serverFacade.joinGame(authData.authToken(), colorStr, game.gameID());
+            } catch (Exception e) {
+                if (e.getMessage().contains("403")) {
+                    return "Error: The " + colorStr + " position is already taken.\n";
+                }
+                throw e;
+            }
+        }
 
+        // Transition to GameplayUI
         try {
             GameplayUI gameplayUI = new GameplayUI(serverUrl, authData.authToken(), game.gameID(), color);
-            gameplayUI.run();  // This enters gameplay mode!
-            return ""; // Return empty string after gameplay ends
+            gameplayUI.run();
+            return "";
         } catch (Exception e) {
             return "Error connecting to game: " + e.getMessage() + "\n";
         }
