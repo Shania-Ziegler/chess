@@ -5,14 +5,15 @@ import client.Repl;
 import client.ServerFacade;
 import model.AuthData;
 import model.GameData;
+import java.util.Scanner;
 
 public class PostloginUI {
     private final ServerFacade serverFacade;
     private final AuthData authData;
+    private final String serverUrl;
     private ServerFacade.ListGamesResult gamesResult;
-    private String serverUrl;
 
-    public PostloginUI(ServerFacade serverFacade, AuthData authData,String serverUrl) {
+    public PostloginUI(ServerFacade serverFacade, AuthData authData, String serverUrl) {
         this.serverFacade = serverFacade;
         this.authData = authData;
         this.serverUrl = serverUrl;
@@ -45,7 +46,6 @@ public class PostloginUI {
             return "Expected: create <game_name>\n";
         }
         String gameName = params[0];
-
         serverFacade.createGame(authData.authToken(), gameName);
         return String.format("Created game '%s'.\n", gameName);
     }
@@ -58,9 +58,7 @@ public class PostloginUI {
         }
 
         StringBuilder result = new StringBuilder("Games:\n");
-        // Use .length instead of .size()
         for (int i = 0; i < gamesResult.games().length; i++) {
-            // Use array[i] instead of .get(i)
             GameData game = gamesResult.games()[i];
             result.append(String.format("%d. %s (White: %s, Black: %s)\n",
                     i + 1,
@@ -73,7 +71,7 @@ public class PostloginUI {
 
     private String playGame(String[] params) throws Exception {
         if (params.length != 2) {
-            return "Expected: play <game_number> Ennter WHITE or BLACK\n";
+            return "Expected: play <game_number> <WHITE|BLACK>\n";
         }
 
         int gameNumber;
@@ -103,8 +101,15 @@ public class PostloginUI {
         boolean alreadyBlack = currentUsername.equals(game.blackUsername());
 
         if (alreadyWhite || alreadyBlack) {
-            // User is already in the game - just reconnect via WebSocket
-            System.out.println("Reconnecting to your game...");
+            // Verify they're reconnecting as the correct color
+            if (alreadyWhite && !colorStr.equals("WHITE")) {
+                return "Error: You are WHITE in this game. Use 'play " + gameNumber + " WHITE'\n";
+            }
+            if (alreadyBlack && !colorStr.equals("BLACK")) {
+                return "Error: You are BLACK in this game. Use color" + gameNumber + " BLACK'\n";
+            }
+            // User is already in the game with correct color - just reconnect
+            System.out.println("Reconnecting to your game");
         } else {
             // Not in the game yet - join via HTTP
             try {
@@ -131,12 +136,14 @@ public class PostloginUI {
         if (params.length != 1) {
             return "Expected: observe <game_number>\n";
         }
+
         int gameNumber;
         try {
             gameNumber = Integer.parseInt(params[0]);
         } catch (NumberFormatException e) {
             return "Game number must be a number\n";
         }
+
         if (gamesResult == null || gameNumber < 1 || gameNumber > gamesResult.games().length) {
             return "Invalid game number. Use 'list' first.\n";
         }
