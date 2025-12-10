@@ -187,6 +187,7 @@ public class WebSocketHandler {
                 sendError(ctx, "Error: No move provided");
                 return;
             }
+            chess.ChessPiece capturedPiece = game.getBoard().getPiece(move.getEndPosition());
 
             try {
                 game.makeMove(move);
@@ -199,17 +200,22 @@ public class WebSocketHandler {
                     gameData.blackUsername(), gameData.gameName(), game);
             gameDAO.updateGame(updatedGameData);
 
-            // Send to client
             LoadGameMessage loadMsg = new LoadGameMessage(game);
             connections.broadcast(command.getGameID(), loadMsg, null);
 
-            // Send move notification to others
-            String moveNotification = username + " moved from " + move.getStartPosition() +
-                    " to " + move.getEndPosition();
+
+            String moveNotification;
+            if (capturedPiece != null) {
+                moveNotification = username + " captured " + capturedPiece.getTeamColor() +
+                        "'s " + capturedPiece.getPieceType() + "!";
+            } else {
+                moveNotification = username + " moved from " + move.getStartPosition() +
+                        " to " + move.getEndPosition();
+            }
             NotificationMessage moveMsg = new NotificationMessage(moveNotification);
             connections.broadcast(command.getGameID(), moveMsg, ctx);
 
-            // Check for check, checkmate, or stalemate
+// Check for check, checkmate, or stalemate
             ChessGame.TeamColor opponentColor = (currentTurn == ChessGame.TeamColor.WHITE) ?
                     ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
 
