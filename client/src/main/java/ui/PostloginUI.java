@@ -73,7 +73,7 @@ public class PostloginUI {
 
     private String playGame(String[] params) throws Exception {
         if (params.length != 2) {
-            return "Expected: play game_number <WHITE|BLACK>\n";
+            return "Expected: play <game_number> <WHITE|BLACK>\n";
         }
 
         int gameNumber;
@@ -82,7 +82,6 @@ public class PostloginUI {
         } catch (NumberFormatException e) {
             return "Game number must be a number\n";
         }
-
 
         if (gamesResult == null || gameNumber < 1 || gameNumber > gamesResult.games().length) {
             return "Invalid game number. Use 'list' first.\n";
@@ -97,16 +96,18 @@ public class PostloginUI {
         }
 
         GameData game = gamesResult.games()[gameNumber - 1];
+
+        // Join game via HTTP first
         serverFacade.joinGame(authData.authToken(), colorStr, game.gameID());
 
 
-        System.out.println("\nWhite's Perspective");
-        BoardDrawer.drawBoard(game.game(), ChessGame.TeamColor.WHITE);
-
-        System.out.println("\nBlack's Perspective");
-        BoardDrawer.drawBoard(game.game(), ChessGame.TeamColor.BLACK);
-
-        return String.format("\nJoined game '%s' as %s.\n", game.gameName(), colorStr);
+        try {
+            GameplayUI gameplayUI = new GameplayUI(serverUrl, authData.authToken(), game.gameID(), color);
+            gameplayUI.run();  // This enters gameplay mode!
+            return ""; // Return empty string after gameplay ends
+        } catch (Exception e) {
+            return "Error connecting to game: " + e.getMessage() + "\n";
+        }
     }
 
     private String observeGame(String[] params) throws Exception {
