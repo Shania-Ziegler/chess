@@ -22,8 +22,8 @@ public class Repl {
     }
 
     public Repl(String serverUrl) {
-        this.serverFacade = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
+        this.serverFacade = new ServerFacade(serverUrl);
         this.preloginUI = new PreloginUI(serverFacade);
     }
 
@@ -80,7 +80,7 @@ public class Repl {
         this.authData = authData;
         this.state = State.LOGGED_IN;
         // Create postloginUI when logging in
-        this.postloginUI = new PostloginUI(serverFacade, authData);
+        this.postloginUI = new PostloginUI(serverFacade, authData, serverUrl);
     }
 
     public void logout() {

@@ -1,6 +1,6 @@
 package ui;
 
-import java.chess.ChessGame;
+import chess.ChessGame;
 import client.Repl;
 import client.ServerFacade;
 import model.AuthData;
@@ -10,10 +10,12 @@ public class PostloginUI {
     private final ServerFacade serverFacade;
     private final AuthData authData;
     private ServerFacade.ListGamesResult gamesResult;
+    private String serverUrl;
 
-    public PostloginUI(ServerFacade serverFacade, AuthData authData) {
+    public PostloginUI(ServerFacade serverFacade, AuthData authData,String serverUrl) {
         this.serverFacade = serverFacade;
         this.authData = authData;
+        this.serverUrl = serverUrl;
     }
 
     public String eval(String cmd, String[] params, Repl repl) {
@@ -94,10 +96,7 @@ public class PostloginUI {
             return "Color must be WHITE or BLACK\n";
         }
 
-
         GameData game = gamesResult.games()[gameNumber - 1];
-
-
         serverFacade.joinGame(authData.authToken(), colorStr, game.gameID());
 
 
