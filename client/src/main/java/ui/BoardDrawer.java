@@ -98,7 +98,7 @@ public class BoardDrawer {
     private static void drawSquare(ChessBoard board, int row, int col, boolean isLightSquare) {
         // Set background color
         if (isLightSquare) {
-           out.print(EscapeSequences.SET_BG_COLOR_YELLOW);
+           out.print(EscapeSequences.SET_BG_COLOR_MAGENTA);
             // out.print(SET_BG_COLOR_OFF_WHITE);
         } else {
             out.print(SET_BG_COLOR_LIGHT_BROWN);
