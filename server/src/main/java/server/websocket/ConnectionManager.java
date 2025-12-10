@@ -13,14 +13,19 @@ public class ConnectionManager {
     private final Gson gson = new Gson();
 
     public void add(Integer gameID, String authToken, WsContext session) {
-        var conn = new Connection(authToken, session);
-        connections.computeIfAbsent(gameID, k -> new ArrayList<>()).add(conn);
+        var list = connections.computeIfAbsent(gameID, k -> new ArrayList<>());
+
+        list.removeIf(conn -> conn.authToken.equals(authToken));
+
+        list.add(new Connection(authToken, session));
+        System.out.println("Added connection for game " + gameID + ", auth: " + authToken);
     }
 
     public void remove(Integer gameID, WsContext session) {
         var list = connections.get(gameID);
         if (list != null) {
             list.removeIf(conn -> conn.session.equals(session));
+            System.out.println("Removed connection from game " + gameID);
         }
     }
 
