@@ -58,5 +58,54 @@ public class GameplayUI implements NotificationHandler {
         System.out.println(EscapeSequences.SET_TEXT_COLOR_BLUE + "\n" + msg.getMessage() + EscapeSequences.RESET_TEXT_COLOR);
         System.out.print(">>> ");
     }
+    public void run() {
+        System.out.println("Entering gameplay. Type 'help' for commands.");
+
+        boolean running = true;
+        while (running) {
+            System.out.print(">>> ");
+            String input = scanner.nextLine().trim();
+
+            if (input.isEmpty()) {
+                continue;
+            }
+
+            String[] parts = input.split("\\s+");
+            String command = parts[0].toLowerCase();
+
+            try {
+                switch (command) {
+                    case "help" -> displayHelp();
+                    case "redraw" -> drawBoard();
+                    case "leave" -> {
+                        leave();
+                        running = false;
+                    }
+                    case "move" -> {
+                        if (parts.length < 3) {
+                            System.out.println("Usage: move <start> <end> (e.g., move e2 e4)");
+                        } else {
+                            makeMove(parts[1], parts[2]);
+                        }
+                    }
+                    case "resign" -> resign();
+                    case "highlight" -> {
+                        if (parts.length < 2) {
+                            System.out.println("Usage: highlight <position> (e.g., highlight e2)");
+                        } else {
+                            highlightMoves(parts[1]);
+                        }
+                    }
+                    case "quit" -> {
+                        leave();
+                        running = false;
+                    }
+                    default -> System.out.println("Unknown command. Type 'help' for available commands.");
+                }
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        }
+    }
 
 }
