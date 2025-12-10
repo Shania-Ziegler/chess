@@ -112,55 +112,27 @@ public class PostloginUI {
 
     private String observeGame(String[] params) throws Exception {
         if (params.length != 1) {
-            return "Expected: observe game_number\n";
+            return "Expected: observe <game_number>\n";
         }
-
         int gameNumber;
         try {
             gameNumber = Integer.parseInt(params[0]);
         } catch (NumberFormatException e) {
-            return "Game number must be a number hint: check list for number\n";
+            return "Game number must be a number\n";
         }
-
-
         if (gamesResult == null || gameNumber < 1 || gameNumber > gamesResult.games().length) {
             return "Invalid game number. Use 'list' first.\n";
         }
 
-        String colorStr = params[1].toUpperCase();
-        ChessGame.TeamColor color;
-        try {
-            color = ChessGame.TeamColor.valueOf(colorStr);
-        }catch(IllegalArgumentException e){
-            return "ONLY WHITE OR BLACK CHESS PEICES";
-        }
         GameData game = gamesResult.games()[gameNumber - 1];
 
         try {
-            serverFacade.joinGame(authData.authToken(), colorStr, game.gameID());
+            GameplayUI gameplayUI = new GameplayUI(serverUrl, authData.authToken(), game.gameID(), null);
+            gameplayUI.run();
+            return "";
         } catch (Exception e) {
-            // Check if it's a 403 error (already taken)
-            if (e.getMessage().contains("403")) {
-                return String.format("Error: The %s position in '%s' is already taken.\n",
-                        colorStr, game.gameName());
-            }
-            throw e; // Re-throw other errors
+            return "Error connecting to game: " + e.getMessage() + "\n";
         }
-
-
-        game = gamesResult.games()[gameNumber - 1];
-
-
-        serverFacade.joinGame(authData.authToken(), null, game.gameID());
-
-
-        System.out.println("\n White's Perspective");
-        BoardDrawer.drawBoard(game.game(), ChessGame.TeamColor.WHITE);
-
-        System.out.println("\nBlack's Perspective");
-        BoardDrawer.drawBoard(game.game(), ChessGame.TeamColor.BLACK);
-
-        return String.format("\nObserving game '%s'.\n", game.gameName());
     }
 
     private String help() {
