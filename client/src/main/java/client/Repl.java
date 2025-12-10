@@ -8,6 +8,7 @@ import static ui.EscapeSequences.*;
 
 public class Repl {
     private final ServerFacade serverFacade;
+    private final String serverUrl;
     private State state = State.LOGGED_OUT;
     private AuthData authData;
 
@@ -22,6 +23,7 @@ public class Repl {
 
     public Repl(String serverUrl) {
         this.serverFacade = new ServerFacade(serverUrl);
+        this.serverUrl = serverUrl;
         this.preloginUI = new PreloginUI(serverFacade);
     }
 
