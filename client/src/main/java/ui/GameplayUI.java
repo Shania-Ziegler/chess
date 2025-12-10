@@ -62,7 +62,7 @@ public class GameplayUI implements NotificationHandler {
     }
 
     public void run() {
-        System.out.println("Entering gameplay. Type 'help' for commands.");
+        System.out.println("Welcome Please Type 'help' for the relevant commands.");
 
         boolean running = true;
         while (running) {
@@ -86,7 +86,8 @@ public class GameplayUI implements NotificationHandler {
                     }
                     case "move" -> {
                         if (parts.length < 3) {
-                            System.out.println("Usage: move <start> <end> (e.g., move e2 e4)");
+                            System.out.println("To make move type: move e2 e4");
+                            System.out.println("This makes the piece move to the relevant position");
                         } else {
                             makeMove(parts[1], parts[2]);
                         }
@@ -94,7 +95,7 @@ public class GameplayUI implements NotificationHandler {
                     case "resign" -> resign();
                     case "highlight" -> {
                         if (parts.length < 2) {
-                            System.out.println("Usage: highlight <position> (e.g., highlight e2)");
+                            System.out.println("To see the allowed moves type: highlight e2 or other position");
                         } else {
                             highlightMoves(parts[1]);
                         }
@@ -106,13 +107,13 @@ public class GameplayUI implements NotificationHandler {
                     default -> System.out.println("Unknown command. Type 'help' for available commands.");
                 }
             } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
+                System.out.println("Something has gone wrong: " + e.getMessage());
             }
         }
     }
 
     private void displayMenu(){
-        System.out.println("Available commands:");
+        System.out.println("Chess game Help Commands:");
         System.out.println("  help - Display this help message next time you're stuck");
         System.out.println("  redraw - Redraw the chess board");
         System.out.println("  leave - Leave the game");
@@ -122,20 +123,20 @@ public class GameplayUI implements NotificationHandler {
     }
     private void drawBoard() {
         if (currentGame == null) {
-            System.out.println("Waiting for game data");
+            System.out.println("Loading Game");
             return;
         }
-        boolean whiteOnBottom = (playerColor == null || playerColor == ChessGame.TeamColor.WHITE);
-        BoardDrawer.drawBoard(currentGame.getBoard(), whiteOnBottom, null);
+        ChessGame.TeamColor perspective = (playerColor != null) ? playerColor : ChessGame.TeamColor.WHITE;
+        BoardDrawer.drawBoard(currentGame, perspective);
     }
     private void leave() throws IOException {
         ws.leave(authToken, gameID);
         ws.close();
-        System.out.println("Left the game.");
+        System.out.println("You Have left the game.");
     }
     private void makeMove(String startPos, String endPos) throws IOException {
         if (playerColor == null) {
-            System.out.println("Observers cannot make moves.");
+            System.out.println("Hy you're watching observers cannot make moves type help to join game.");
             return;
         }
 
@@ -161,7 +162,7 @@ public class GameplayUI implements NotificationHandler {
             ws.makeMove(authToken, gameID, move);
 
         } catch (Exception e) {
-            System.out.println("Invalid move format. Use format like: move e2 e4");
+            System.out.println("Invalid move format. Please enter something like: move e2 e4");
         }
     }
 
@@ -184,7 +185,7 @@ public class GameplayUI implements NotificationHandler {
 
     private void highlightMoves(String posStr) {
         if (currentGame == null) {
-            System.out.println("Game not loaded yet.");
+            System.out.println("Still loading game please wait.");
             return;
         }
 
@@ -193,22 +194,26 @@ public class GameplayUI implements NotificationHandler {
             Collection<ChessMove> validMoves = currentGame.validMoves(position);
 
             if (validMoves == null || validMoves.isEmpty()) {
-                System.out.println("No valid moves for that piece.");
+                System.out.println("That piece can't move please try another.");
                 return;
             }
 
-            // Draw board with highlights
-            boolean whiteOnBottom = (playerColor == null || playerColor == ChessGame.TeamColor.WHITE);
-            BoardDrawer.drawBoard(currentGame.getBoard(), whiteOnBottom, validMoves);
+            System.out.println("\nLegal moves for piece at " + posStr + ":");
+            for (ChessMove move : validMoves) {
+                ChessPosition end = move.getEndPosition();
+                char col = (char)('a' + end.getColumn() - 1);
+                System.out.println("  → " + col + end.getRow());
+            }
+            System.out.println();
 
         } catch (Exception e) {
-            System.out.println("Invalid position format. Use format like: highlight e2");
+            System.out.println("That position doesn't exist. Retry with command like: highlight e2");
         }
     }
 
     private ChessPosition parsePosition(String pos) {
         if (pos.length() != 2) {
-            throw new IllegalArgumentException("Invalid position given");
+            throw new IllegalArgumentException("Invalid position given type help if you need further assistance");
         }
 
         char colChar = Character.toLowerCase(pos.charAt(0));
@@ -218,23 +223,31 @@ public class GameplayUI implements NotificationHandler {
         int row = Character.getNumericValue(rowChar);
 
         if (col < 1 || col > 8 || row < 1 || row > 8) {
-            throw new IllegalArgumentException("Position out of bounds");
+            throw new IllegalArgumentException("Position out of bounds must be a-h and 1-8");
         }
 
         return new ChessPosition(row, col);
     }
 
     private ChessPiece.PieceType promptForPromotion() {
-        System.out.println("Promote pawn to: (Q)ueen, (R)ook, (B)ishop, (K)night by using upper case first letter of piece");
-        System.out.print(">>> ");
-        String choice = scanner.nextLine().trim().toLowerCase();
+        System.out.println("\n Your pawn has reached the end! Please choose what to promote it to:");
+        System.out.println("  Q - Queen");
+        System.out.println("  R - Rook");
+        System.out.println("  B - Bishop");
+        System.out.println("  N - Knight");
+        System.out.print("Type your choice (Q/R/B/N): ");
+
+        String choice = scanner.nextLine().trim().toUpperCase();
 
         return switch (choice) {
-            case "Q", "queen" -> ChessPiece.PieceType.QUEEN;
-            case "R", "rook" -> ChessPiece.PieceType.ROOK;
-            case "B", "bishop" -> ChessPiece.PieceType.BISHOP;
-            case "K", "knight" -> ChessPiece.PieceType.KNIGHT;
-            default -> ChessPiece.PieceType.QUEEN; // Default to queen if they dont pick
+            case "Q" -> ChessPiece.PieceType.QUEEN;
+            case "R" -> ChessPiece.PieceType.ROOK;
+            case "B" -> ChessPiece.PieceType.BISHOP;
+            case "N" -> ChessPiece.PieceType.KNIGHT;
+            default -> {
+                System.out.println("No choice? Will make this into Queen");
+                yield ChessPiece.PieceType.QUEEN;
+            }
         };
     }
 }
