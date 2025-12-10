@@ -213,7 +213,7 @@ public class WebSocketHandler {
                         " to " + move.getEndPosition();
             }
             NotificationMessage moveMsg = new NotificationMessage(moveNotification);
-            connections.broadcast(command.getGameID(), moveMsg, null);
+            connections.broadcast(command.getGameID(), moveMsg, ctx);
 
 // Check for check, checkmate, or stalemate
             ChessGame.TeamColor opponentColor = (currentTurn == ChessGame.TeamColor.WHITE) ?
