@@ -48,27 +48,44 @@ public class GameplayUI implements NotificationHandler {
         }
     }
 
+
     private void handleLoadGame(LoadGameMessage msg) {
         this.currentGame = msg.getGame();
         System.out.println();
         drawBoard();
 
         ChessGame.TeamColor currentTurn = currentGame.getTeamTurn();
+        boolean inCheck = currentGame.isInCheck(currentTurn);
+
         if (playerColor != null) {
             if (currentTurn == playerColor) {
-                System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN +
-                        "It's your turn :)" + EscapeSequences.RESET_TEXT_COLOR);
+                if (inCheck) {
+                    System.out.println(EscapeSequences.SET_TEXT_COLOR_RED +
+                            "⚠ YOU ARE IN CHECK! You must protect your king and cannot move any pieces which would not protect your king" +
+                            EscapeSequences.RESET_TEXT_COLOR);
+                } else {
+                    System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN +
+                            "It's your turn :)" + EscapeSequences.RESET_TEXT_COLOR);
+                }
             } else {
-                System.out.println(EscapeSequences.SET_TEXT_COLOR_YELLOW +
-                        "Waiting for opponent." + EscapeSequences.RESET_TEXT_COLOR);
+                if (inCheck) {
+                    System.out.println(EscapeSequences.SET_TEXT_COLOR_YELLOW +
+                            "Opponent is in check!" + EscapeSequences.RESET_TEXT_COLOR);
+                } else {
+                    System.out.println(EscapeSequences.SET_TEXT_COLOR_YELLOW +
+                            "Waiting for opponent..." + EscapeSequences.RESET_TEXT_COLOR);
+                }
             }
         } else {
             System.out.println("Current turn: " + currentTurn);
+            if (inCheck) {
+                System.out.println(EscapeSequences.SET_TEXT_COLOR_RED +
+                        currentTurn + " is in check!" + EscapeSequences.RESET_TEXT_COLOR);
+            }
         }
 
         System.out.print("\n>>> ");
     }
-
 
 
     private void handleError(ErrorMessage msg) {
