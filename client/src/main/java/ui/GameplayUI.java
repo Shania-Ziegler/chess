@@ -116,14 +116,14 @@ public class GameplayUI implements NotificationHandler {
         }
     }
 
-    private void displayMenu(){
-        System.out.println("Chess game Help Commands:");
-        System.out.println("  help - Display this help message next time you're stuck");
+    private void displayMenu() {
+        System.out.println("Chess game commands:");
+        System.out.println("  help - Show this help message");
         System.out.println("  redraw - Redraw the chess board");
         System.out.println("  leave - Leave the game");
-        System.out.println("  Make move start + end (move e2 e4 ect)");
+        System.out.println("  move <from> <to> - Move a piece (example: move e2 e4)");
         System.out.println("  resign - Forfeit the game");
-        System.out.println(" Show position legal moves for a piece ( example: show e2)");
+        System.out.println("  highlight <position> - Show legal moves (example: highlight e2)");
     }
     private void drawBoard() {
         if (currentGame == null) {
