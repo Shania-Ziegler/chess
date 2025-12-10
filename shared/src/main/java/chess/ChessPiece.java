@@ -169,7 +169,9 @@ public class ChessPiece {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof ChessPiece other)) return false;
+        if (!(obj instanceof ChessPiece other)) {
+            return false;
+        }
         return this.pieceColor == other.pieceColor && this.type == other.type;
     }
 
