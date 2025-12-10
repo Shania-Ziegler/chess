@@ -1,15 +1,19 @@
 package ui;
 
-import chess.*;
-import java.util.Collection;
+import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import client.websocket.NotificationHandler;
 import client.websocket.WebSocketFacade;
-import websocket.messages.*;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
+import websocket.messages.ServerMessage;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Scanner;
-
-import static ui.BoardDrawer.drawBoard;
 
 public class GameplayUI implements NotificationHandler {
     private final WebSocketFacade ws;
@@ -48,8 +52,24 @@ public class GameplayUI implements NotificationHandler {
         this.currentGame = msg.getGame();
         System.out.println();
         drawBoard();
-        System.out.print("\n>>>");
+
+        ChessGame.TeamColor currentTurn = currentGame.getTeamTurn();
+        if (playerColor != null) {
+            if (currentTurn == playerColor) {
+                System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN +
+                        "It's your turn :)" + EscapeSequences.RESET_TEXT_COLOR);
+            } else {
+                System.out.println(EscapeSequences.SET_TEXT_COLOR_YELLOW +
+                        "Waiting for opponent." + EscapeSequences.RESET_TEXT_COLOR);
+            }
+        } else {
+            System.out.println("Current turn: " + currentTurn);
+        }
+
+        System.out.print("\n>>> ");
     }
+
+
 
     private void handleError(ErrorMessage msg) {
         System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "\n" + msg.getErrorMessage() + EscapeSequences.RESET_TEXT_COLOR);
