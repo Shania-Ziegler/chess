@@ -84,22 +84,9 @@ public class GameplayUI implements NotificationHandler {
                         leave();
                         running = false;
                     }
-                    case "move" -> {
-                        if (parts.length < 3) {
-                            System.out.println("To make move type: move e2 e4");
-                            System.out.println("This makes the piece move to the relevant position");
-                        } else {
-                            makeMove(parts[1], parts[2]);
-                        }
-                    }
+                    case "move" -> handleMoveCommand(parts);
                     case "resign" -> resign();
-                    case "highlight" -> {
-                        if (parts.length < 2) {
-                            System.out.println("To see the allowed moves type: highlight e2 or other position");
-                        } else {
-                            highlightMoves(parts[1]);
-                        }
-                    }
+                    case "highlight" -> handleHighlightCommand(parts);
                     case "quit" -> {
                         leave();
                         running = false;
@@ -109,6 +96,23 @@ public class GameplayUI implements NotificationHandler {
             } catch (Exception e) {
                 System.out.println("Something has gone wrong: " + e.getMessage());
             }
+        }
+    }
+
+    private void handleMoveCommand(String[] parts) throws IOException {
+        if (parts.length < 3) {
+            System.out.println("To make move type: move e2 e4");
+            System.out.println("This makes the piece move to the relevant position");
+        } else {
+            makeMove(parts[1], parts[2]);
+        }
+    }
+
+    private void handleHighlightCommand(String[] parts) {
+        if (parts.length < 2) {
+            System.out.println("To see the allowed moves type: highlight e2 or other position");
+        } else {
+            highlightMoves(parts[1]);
         }
     }
 
