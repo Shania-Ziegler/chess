@@ -24,7 +24,7 @@ public class WebSocketHandler {
     }
 
     public void onConnect(WsConnectContext ctx) {
-        System.out.println("WebSocket connected: "+ctx.session.getRemoteAddress());
+        System.out.println("WebSocket connected: ");
     }
 
     public void onMessage(WsMessageContext ctx) {

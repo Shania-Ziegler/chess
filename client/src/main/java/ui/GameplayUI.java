@@ -149,21 +149,30 @@ public class GameplayUI implements NotificationHandler {
             ChessPosition start = parsePosition(startPos);
             ChessPosition end = parsePosition(endPos);
 
-            ChessPiece piece = currentGame.getBoard().getPiece(start);
-            ChessPiece.PieceType promotion = null;
-
-            if (piece != null && piece.getPieceType() == ChessPiece.PieceType.PAWN) {
-                if ((piece.getTeamColor() == ChessGame.TeamColor.WHITE && end.getRow() == 8) ||
-                        (piece.getTeamColor() == ChessGame.TeamColor.BLACK && end.getRow() == 1)) {
-                    promotion = promptForPromotion();
-                }
-            }
+            ChessPiece.PieceType promotion = checkForPawnPromotion(start, end);
             ChessMove move = new ChessMove(start, end, promotion);
             ws.makeMove(authToken, gameID, move);
 
         } catch (Exception e) {
             System.out.println("Invalid move format. Please enter something like: move e2 e4");
         }
+    }
+
+    private ChessPiece.PieceType checkForPawnPromotion(ChessPosition start, ChessPosition end) {
+        ChessPiece piece = currentGame.getBoard().getPiece(start);
+
+        if (piece == null || piece.getPieceType() != ChessPiece.PieceType.PAWN) {
+            return null;
+        }
+
+        boolean whitePromotion = piece.getTeamColor() == ChessGame.TeamColor.WHITE && end.getRow() == 8;
+        boolean blackPromotion = piece.getTeamColor() == ChessGame.TeamColor.BLACK && end.getRow() == 1;
+
+        if (whitePromotion || blackPromotion) {
+            return promptForPromotion();
+        }
+
+        return null;
     }
 
     private void resign() throws IOException {
