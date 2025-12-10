@@ -3,7 +3,7 @@ package passoff.chess;
 import chess.*;
 import org.junit.jupiter.api.Assertions;
 
-import java.chess.ChessGame;
+import chess.ChessGame;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
