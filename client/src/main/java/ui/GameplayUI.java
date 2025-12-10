@@ -208,7 +208,7 @@ public class GameplayUI implements NotificationHandler {
 
     private ChessPosition parsePosition(String pos) {
         if (pos.length() != 2) {
-            throw new IllegalArgumentException("Invalid position format");
+            throw new IllegalArgumentException("Invalid position given");
         }
 
         char colChar = Character.toLowerCase(pos.charAt(0));
@@ -225,16 +225,16 @@ public class GameplayUI implements NotificationHandler {
     }
 
     private ChessPiece.PieceType promptForPromotion() {
-        System.out.println("Promote pawn to: (Q)ueen, (R)ook, (B)ishop, (K)night");
+        System.out.println("Promote pawn to: (Q)ueen, (R)ook, (B)ishop, (K)night by using upper case first letter of piece");
         System.out.print(">>> ");
         String choice = scanner.nextLine().trim().toLowerCase();
 
         return switch (choice) {
-            case "q", "queen" -> ChessPiece.PieceType.QUEEN;
-            case "r", "rook" -> ChessPiece.PieceType.ROOK;
-            case "b", "bishop" -> ChessPiece.PieceType.BISHOP;
-            case "k", "knight" -> ChessPiece.PieceType.KNIGHT;
-            default -> ChessPiece.PieceType.QUEEN; // Default to queen
+            case "Q", "queen" -> ChessPiece.PieceType.QUEEN;
+            case "R", "rook" -> ChessPiece.PieceType.ROOK;
+            case "B", "bishop" -> ChessPiece.PieceType.BISHOP;
+            case "K", "knight" -> ChessPiece.PieceType.KNIGHT;
+            default -> ChessPiece.PieceType.QUEEN; // Default to queen if they dont pick
         };
     }
 }
