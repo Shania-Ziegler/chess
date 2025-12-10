@@ -35,8 +35,8 @@ public class WebSocketHandler {
             UserGameCommand command = gson.fromJson(message, UserGameCommand.class);
 
             switch (command.getCommandType()) {
-                case CONNECT -> handleConnect(ctx, command);
-                case MAKE_MOVE -> handleMakeMove(ctx, command);
+                case CONNECT -> handleConnect(ctx, command, message);
+                case MAKE_MOVE -> handleMakeMove(ctx, command, message);  // Pass message
                 case LEAVE -> handleLeave(ctx, command);
                 case RESIGN -> handleResign(ctx, command);
             }
@@ -45,7 +45,7 @@ public class WebSocketHandler {
         }
     }
 
-    private void handleConnect(WsMessageContext ctx, UserGameCommand command) {
+    private void handleConnect(WsMessageContext ctx, UserGameCommand command, String message) {
         try {
             // Validate authToken
             AuthData auth = authDAO.getAuth(command.getAuthToken());
@@ -128,7 +128,7 @@ public class WebSocketHandler {
         }
     }
 
-    private void handleMakeMove(WsMessageContext ctx, UserGameCommand command) {
+    private void handleMakeMove(WsMessageContext ctx, UserGameCommand command, String message) {
         try {
             // Validate auth
             AuthData auth = authDAO.getAuth(command.getAuthToken());
@@ -169,10 +169,14 @@ public class WebSocketHandler {
                 return;
             }
 
-
-            MakeMoveCommand moveCommand = gson.fromJson(gson.toJson(command), MakeMoveCommand.class);
+            // Parse as MakeMoveCommand directly from the original message
+            MakeMoveCommand moveCommand = gson.fromJson(message, MakeMoveCommand.class);
             ChessMove move = moveCommand.getMove();
 
+            if (move == null) {
+                sendError(ctx, "Error: No move provided");
+                return;
+            }
 
             try {
                 game.makeMove(move);
@@ -181,14 +185,13 @@ public class WebSocketHandler {
                 return;
             }
 
-
             GameData updatedGameData = new GameData(gameData.gameID(), gameData.whiteUsername(),
                     gameData.blackUsername(), gameData.gameName(), game);
             gameDAO.updateGame(updatedGameData);
 
             // Send to client
             LoadGameMessage loadMsg = new LoadGameMessage(game);
-            connections.broadcast(command.getGameID(), loadMsg, null); // null = send to everyone
+            connections.broadcast(command.getGameID(), loadMsg, null);
 
             // Send move notification to others
             String moveNotification = username + " moved from " + move.getStartPosition() +
