@@ -138,9 +138,11 @@ public class GameplayUI implements NotificationHandler {
         ws.close();
         System.out.println("You Have left the game.");
     }
+
+
     private void makeMove(String startPos, String endPos) throws IOException {
         if (playerColor == null) {
-            System.out.println("Hy you're watching observers cannot make moves type help to join game.");
+            System.out.println("Hey you're watching observers cannot make moves type help to join game.");
             return;
         }
 
@@ -155,10 +157,13 @@ public class GameplayUI implements NotificationHandler {
 
             ChessPiece.PieceType promotion = checkForPawnPromotion(start, end);
             ChessMove move = new ChessMove(start, end, promotion);
+
+            System.out.println("Sending move: " + startPos + " to " + endPos);
             ws.makeMove(authToken, gameID, move);
 
         } catch (Exception e) {
-            System.out.println("Invalid move format. Please enter something like: move e2 e4");
+            System.out.println("Error making move please type help to assist on making move: " + e.getMessage());
+            e.printStackTrace();  // shows full error
         }
     }
 
