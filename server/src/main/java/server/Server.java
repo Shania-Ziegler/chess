@@ -7,6 +7,7 @@ import dataaccess.*;
 import service.*;
 import server.websocket.WebSocketHandler;
 import java.util.Map;
+import java.time.Duration;
 
 public class Server {
 
@@ -38,7 +39,10 @@ public class Server {
 
         // Register WebSocket endpoint
         javalin.ws("/ws", ws -> {
-            ws.onConnect(webSocketHandler::onConnect);
+            ws.onConnect(ctx -> {
+                ctx.session.setIdleTimeout(Duration.ofMinutes(30));
+                webSocketHandler.onConnect(ctx);
+            });
             ws.onMessage(webSocketHandler::onMessage);
             ws.onClose(ctx -> {
                 System.out.println("WebSocket connection closed");
